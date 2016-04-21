@@ -1,0 +1,6 @@
+[submodule "flash_display"]
+	path = flash_display
+	url = https://github.com/islamaliev/flash_display.git
+[submodule "tests/dependencies/googletest"]
+	path = tests/dependencies/googletest
+	url = https://github.com/google/googletest.git

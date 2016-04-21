@@ -3,15 +3,15 @@ project(tests)
 
 enable_testing()
 
-set(MATH_LIB flash_math)
+set(DISPLAY_LIB flash_display)
 
-set(${MATH_LIB}_SOURCE_DIR ../${MATH_LIB})
-add_subdirectory(${${MATH_LIB}_SOURCE_DIR} ${CMAKE_BINARY_DIR}/${MATH_LIB})
+set(${DISPLAY_LIB}_SOURCE_DIR ../${DISPLAY_LIB})
+add_subdirectory(${${DISPLAY_LIB}_SOURCE_DIR} ${CMAKE_BINARY_DIR}/${DISPLAY_LIB})
 
-set(MATH_LIB_TARGET_NAME ${${MATH_LIB}_TARGET_NAME})
+set(DISPLAY_LIB_TARGET_NAME ${${DISPLAY_LIB}_TARGET_NAME})
 
 include_directories(
-        ${${MATH_LIB}_INCLUDE_DIRS}
+        ${${DISPLAY_LIB}_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies
@@ -22,6 +22,6 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include(gmock)
 
 file(GLOB UNIT_TEST_SOURCE_FILES ${SOURCE_DIR}/*.cpp)
-add_gmock_test(${MATH_LIB_TARGET_NAME}_tests ${UNIT_TEST_SOURCE_FILES})
-target_link_libraries(${MATH_LIB_TARGET_NAME}_tests ${MATH_LIB_TARGET_NAME})
+add_gmock_test(${DISPLAY_LIB_TARGET_NAME}_tests ${UNIT_TEST_SOURCE_FILES})
+target_link_libraries(${DISPLAY_LIB_TARGET_NAME}_tests ${DISPLAY_LIB_TARGET_NAME})
 

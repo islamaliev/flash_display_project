@@ -40,6 +40,27 @@ TEST_F(DisplayObjectTest, SetY) {
     ASSERT_EQ(displayObject.y(), 9);
 }
 
+TEST_F(DisplayObjectTest, SetPivotX) {
+    displayObject.setPivotX(3);
+    ASSERT_EQ(displayObject.pivotX(), 3);
+    displayObject.setPivotX(7);
+    ASSERT_EQ(displayObject.pivotX(), 7);
+}
+
+TEST_F(DisplayObjectTest, SetPivotY) {
+    displayObject.setPivotY(5);
+    ASSERT_EQ(displayObject.pivotY(), 5);
+    displayObject.setPivotY(9);
+    ASSERT_EQ(displayObject.pivotY(), 9);
+}
+
+TEST_F(DisplayObjectTest, SetRotation) {
+    displayObject.setRotation(1);
+    ASSERT_EQ(displayObject.rotation(), 1);
+    displayObject.setRotation(2);
+    ASSERT_EQ(displayObject.rotation(), 2);
+}
+
 TEST_F(DisplayObjectTest, SetScaleX) {
     displayObject.setScaleX(3);
     ASSERT_EQ(displayObject.scaleX(), 3);
@@ -62,6 +83,9 @@ TEST_F(DisplayObjectTest, DefaultConstructor) {
     ASSERT_EQ(obj.height(), 1);
     ASSERT_EQ(obj.scaleX(), 1);
     ASSERT_EQ(obj.scaleY(), 1);
+    ASSERT_EQ(obj.pivotX(), 0);
+    ASSERT_EQ(obj.pivotY(), 0);
+    ASSERT_EQ(obj.rotation(), 0);
     ASSERT_EQ(obj.visible(), true);
 }
 

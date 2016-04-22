@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 
 using namespace testing;
+using namespace flash::display;
 
 class DisplayObjectTest : public testing::Test {
 public:

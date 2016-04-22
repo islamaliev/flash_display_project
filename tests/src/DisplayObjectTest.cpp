@@ -1,6 +1,5 @@
 #include <gmock/gmock-matchers.h>
 #include <DisplayObject.h>
-#include "gtest/gtest.h"
 
 using namespace testing;
 using namespace flash::display;

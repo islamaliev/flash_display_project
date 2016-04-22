@@ -26,6 +26,45 @@ TEST_F(DisplayObjectTest, SetHeight) {
     ASSERT_EQ(displayObject.height(), 200);
 }
 
+TEST_F(DisplayObjectTest, SetX) {
+    displayObject.setX(3);
+    ASSERT_EQ(displayObject.x(), 3);
+    displayObject.setX(7);
+    ASSERT_EQ(displayObject.x(), 7);
+}
+
+TEST_F(DisplayObjectTest, SetY) {
+    displayObject.setY(5);
+    ASSERT_EQ(displayObject.y(), 5);
+    displayObject.setY(9);
+    ASSERT_EQ(displayObject.y(), 9);
+}
+
+TEST_F(DisplayObjectTest, SetScaleX) {
+    displayObject.setScaleX(3);
+    ASSERT_EQ(displayObject.scaleX(), 3);
+    displayObject.setScaleX(7);
+    ASSERT_EQ(displayObject.scaleX(), 7);
+}
+
+TEST_F(DisplayObjectTest, SetScaleY) {
+    displayObject.setScaleY(5);
+    ASSERT_EQ(displayObject.scaleY(), 5);
+    displayObject.setScaleY(9);
+    ASSERT_EQ(displayObject.scaleY(), 9);
+}
+
+TEST_F(DisplayObjectTest, DefaultConstructor) {
+    DisplayObject obj;
+    ASSERT_EQ(obj.x(), 0);
+    ASSERT_EQ(obj.y(), 0);
+    ASSERT_EQ(obj.width(), 1);
+    ASSERT_EQ(obj.height(), 1);
+    ASSERT_EQ(obj.scaleX(), 1);
+    ASSERT_EQ(obj.scaleY(), 1);
+    ASSERT_EQ(obj.visible(), true);
+}
+
 TEST_F(DisplayObjectTest, setVisible) {
     displayObject.setVisible(false);
     ASSERT_EQ(displayObject.visible(), false);

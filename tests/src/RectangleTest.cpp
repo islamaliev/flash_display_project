@@ -23,6 +23,14 @@ TEST_F(RectangleTest, Constructor) {
     ASSERT_EQ(r.height(), 4);
 }
 
+TEST_F(RectangleTest, DefaultConstructor) {
+    Rectangle r;
+    ASSERT_EQ(r.x(), 0);
+    ASSERT_EQ(r.y(), 0);
+    ASSERT_EQ(r.width(), 1);
+    ASSERT_EQ(r.height(), 1);
+}
+
 TEST_F(RectangleTest, SetX) {
     rect.setX(3);
     ASSERT_EQ(rect.x(), 3);

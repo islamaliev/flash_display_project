@@ -1,6 +1,5 @@
-#include <gmock/gmock-matchers.h>
-#include "gtest/gtest.h"
-#include <Rectangle.h>
+#include "gmock/gmock-matchers.h"
+#include "Rectangle.h"
 
 
 using namespace testing;

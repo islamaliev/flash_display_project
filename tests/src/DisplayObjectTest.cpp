@@ -1,11 +1,11 @@
-#include <gmock/gmock-matchers.h>
-#include <DisplayObject.h>
+#include "gmock/gmock-matchers.h"
+#include "DisplayObject.h"
 
 using namespace testing;
 using namespace flash::display;
 
 class DisplayObjectTest : public testing::Test {
-public:
+protected:
     void SetUp() override {
     }
 

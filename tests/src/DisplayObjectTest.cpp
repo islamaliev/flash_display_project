@@ -2,11 +2,17 @@
 #include "DisplayObject.h"
 
 using namespace testing;
-using namespace flash::display;
 
 class DisplayObjectTest : public testing::Test {
-protected:
-    void SetUp() override {
+public:
+    using DisplayObject = flash::display::DisplayObject;
+    using Rectangle = flash::core::Rectangle;
+
+    ::testing::AssertionResult RectanglesEQ(const Rectangle& r1, const Rectangle& r2) {
+        if (r1 != r2) {
+            return ::testing::AssertionFailure() << "rect " << r1 << "!= " << r2;
+        }
+        return ::testing::AssertionSuccess();
     }
 
     DisplayObject displayObject;
@@ -89,9 +95,19 @@ TEST_F(DisplayObjectTest, DefaultConstructor) {
     ASSERT_EQ(obj.visible(), true);
 }
 
-TEST_F(DisplayObjectTest, setVisible) {
+TEST_F(DisplayObjectTest, SetVisible) {
     displayObject.setVisible(false);
     ASSERT_EQ(displayObject.visible(), false);
     displayObject.setVisible(true);
     ASSERT_EQ(displayObject.visible(), true);
+}
+
+TEST_F(DisplayObjectTest, GetBoundsInOwnSpace) {
+    displayObject.setX(10);
+    displayObject.setY(10);
+    displayObject.setWidth(33);
+    displayObject.setHeight(35);
+    Rectangle r = displayObject.getBounds(&displayObject);
+    ASSERT_TRUE(RectanglesEQ(r, {0, 0, 33, 35}));
+
 }

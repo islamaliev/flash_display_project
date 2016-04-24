@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(flash_display_project)
 
 set (CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set (CMAKE_DISABLE_SOURCE_CHANGES ON)
+#set (CMAKE_DISABLE_SOURCE_CHANGES ON)
 
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
     message(SEND_ERROR "In-source builds are not allowed.")
@@ -21,4 +21,6 @@ set (LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 include(flash_display)
 
 add_subdirectory(tests)
+
+add_subdirectory(examples)
 

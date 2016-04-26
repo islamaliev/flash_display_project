@@ -1,7 +1,6 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "shader.h"
-#include <math.h>
 #include <cstdio>
 #include <ctime>
 

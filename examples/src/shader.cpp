@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <SFML/OpenGL.hpp>
+#include <OpenGL/gl.h>
 #include "shader.h"
 
 using namespace std;

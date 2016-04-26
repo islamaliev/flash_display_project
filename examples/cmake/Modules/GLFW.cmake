@@ -6,12 +6,14 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "Don't build docs")
 add_subdirectory(${glfw_DIR} ${CMAKE_BINARY_DIR}/glfw)
 set_target_properties(glfw PROPERTIES COMPILE_FLAGS " -w")
 
-# find OpenGL
 find_package(OpenGL REQUIRED)
-set(ADDITIONAL_LIBRARIES ${OPENGL_LIBRARIES})
+set(GL_LIBRARIES ${OPENGL_LIBRARIES})
 
-include_directories(${glfw_DIR}/include)
+find_package(GLEW REQUIRED)
+list(APPEND GL_LIBRARIES ${GLEW_LIBRARIES})
+
+include_directories(${GLEW_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIRS} ${glfw_DIR}/include)
 
 function(link_glfw target)
-    target_link_libraries(${target} glfw glew ${ADDITIONAL_LIBRARIES})
+    target_link_libraries(${target} glfw ${GL_LIBRARIES})
 endfunction()

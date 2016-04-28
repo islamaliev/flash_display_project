@@ -8,8 +8,7 @@
 
 using namespace std;
 
-//string projectPath = "/Users/islamaliev/dev/testing/cpp/game/game/";
-extern string projectPath;
+string projectPath;
 
 vector<GLuint> shaders;
 

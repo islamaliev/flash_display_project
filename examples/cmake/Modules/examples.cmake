@@ -1,4 +1,3 @@
-include(glfw)
 include(boost)
 
 function(add_example target)
@@ -8,7 +7,6 @@ function(add_example target)
     add_executable(${target} ${${target}_SOURCE_FILES})
     set_target_properties(${target} PROPERTIES LINKER_LANGUAGE CXX)
     set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-    link_glfw(${target})
     link_boost(${target})
     target_link_libraries(${target} ${DISPLAY_LIB_TARGET_NAME})
 

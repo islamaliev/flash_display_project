@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-include_directories(${SOURCE_DIR})
+include_directories(${flash_display_INCLUDE_DIRS})
 
 include(examples)
 

@@ -1,16 +1,40 @@
 #include "gmock/gmock-matchers.h"
 #include "DisplayObject.h"
+#include <ostream>
 
 using namespace testing;
+using Mat4 = flash::math::Mat4;
+using DisplayObject = flash::display::DisplayObject;
+using Rectangle = flash::core::Rectangle;
+
+std::string toString(const Mat4& m) {
+    char buf[160];
+    sprintf(buf, "[%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f]"
+            , m.v1.x, m.v1.y, m.v1.z, m.v1.w, m.v2.x, m.v2.y, m.v2.z, m.v2.w
+            , m.v3.x, m.v3.y, m.v3.z, m.v3.w, m.vt.x, m.vt.y, m.vt.z, m.vt.w);
+    return std::string(buf);
+}
+
+std::string toString(const Rectangle& rect) {
+    char buf[100];
+    sprintf(buf, "(x = %f, y = %f, width = %f, height = %f)", rect.x, rect.y, rect.width, rect.height);
+    return std::string(buf);
+}
 
 class DisplayObjectTest : public testing::Test {
 public:
-    using DisplayObject = flash::display::DisplayObject;
-    using Rectangle = flash::core::Rectangle;
 
-    ::testing::AssertionResult RectanglesEQ(const Rectangle& r1, const Rectangle& r2) {
-        if (r1 != r2) {
-            return ::testing::AssertionFailure() << "rect " << r1 << "!= " << r2;
+    ::testing::AssertionResult RectanglesEQ(const Rectangle& actual, const Rectangle& expected) {
+        if (actual != expected) {
+            return ::testing::AssertionFailure() << "rect " << toString(actual) << "!= " << toString(expected);
+        }
+        return ::testing::AssertionSuccess();
+    }
+
+    ::testing::AssertionResult MatrixEQ(const Mat4& actual, const Mat4& expected) {
+        if (!actual.isEqual(expected)) {
+            return ::testing::AssertionFailure() << "\nactual matrix:   " << toString(actual)
+                   << "\nexpected matrix: " << toString(expected);
         }
         return ::testing::AssertionSuccess();
     }
@@ -110,4 +134,20 @@ TEST_F(DisplayObjectTest, GetBoundsInOwnSpace) {
     Rectangle r = displayObject.getBounds(&displayObject);
     ASSERT_TRUE(RectanglesEQ(r, {0, 0, 33, 35}));
 
+}
+
+TEST_F(DisplayObjectTest, getTransfomrForPositionAndSize) {
+    int x = 10;
+    int y = 20;
+    int w = 40;
+    int h = 60;
+    displayObject.setX(x);
+    displayObject.setY(y);
+    displayObject.setWidth(w);
+    displayObject.setHeight(h);
+    
+    Mat4 m;
+    m.translate(x + w / 2, y + h / 2, 0);
+    m.scale(w, h, 0);
+    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), m));
 }

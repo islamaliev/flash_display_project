@@ -88,3 +88,57 @@ TEST_F(DisplayObjectContainerTest, Contains) {
     ASSERT_TRUE(cont.contains(&obj3));
     ASSERT_FALSE(cont.contains(&outerObject));
 }
+
+TEST_F(DisplayObjectContainerTest, AddChildSetsChildsParent) {
+    cont.addChild(&obj1);
+    ASSERT_EQ(obj1.getParent(), &cont);
+}
+
+TEST_F(DisplayObjectContainerTest, AddChildAtSetsChildsParent) {
+    cont.addChildAt(&obj1, 0);
+    ASSERT_EQ(obj1.getParent(), &cont);
+}
+
+TEST_F(DisplayObjectContainerTest, RemoveChildNullsChildsParent) {
+    cont.addChild(&obj1);
+    cont.removeChild(&obj1);
+    ASSERT_TRUE(obj1.getParent() == nullptr);
+}
+
+TEST_F(DisplayObjectContainerTest, RemoveChildAtNullsChildsParent) {
+    cont.addChild(&obj1);
+    cont.removeChildAt(0);
+    ASSERT_TRUE(obj1.getParent() == nullptr);
+}
+
+TEST_F(DisplayObjectContainerTest, RemoveChildrenNullsAllChildrensParents) {
+    addChildren();
+    cont.removeChildren();
+    ASSERT_TRUE(obj1.getParent() == nullptr);
+    ASSERT_TRUE(obj2.getParent() == nullptr);
+    ASSERT_TRUE(obj3.getParent() == nullptr);
+}
+
+TEST_F(DisplayObjectContainerTest, AddChildToAnotherContainer_childsParentUpdated) {
+    addChildren();
+    DisplayObjectContainer cont2;
+    cont2.addChild(&obj1);
+    ASSERT_EQ(obj1.getParent(), &cont2);
+    ASSERT_EQ(obj2.getParent(), &cont);
+    ASSERT_EQ(obj3.getParent(), &cont);
+    ASSERT_TRUE(cont.contains(&obj2));
+    ASSERT_TRUE(cont.contains(&obj3));
+    ASSERT_TRUE(cont2.contains(&obj1));
+}
+
+TEST_F(DisplayObjectContainerTest, AddChildAtToAnotherContainer_childsParentUpdated) {
+    addChildren();
+    DisplayObjectContainer cont2;
+    cont2.addChildAt(&obj1, 0);
+    ASSERT_EQ(obj1.getParent(), &cont2);
+    ASSERT_EQ(obj2.getParent(), &cont);
+    ASSERT_EQ(obj3.getParent(), &cont);
+    ASSERT_TRUE(cont.contains(&obj2));
+    ASSERT_TRUE(cont.contains(&obj3));
+    ASSERT_TRUE(cont2.contains(&obj1));
+}

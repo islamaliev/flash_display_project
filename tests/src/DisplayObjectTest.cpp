@@ -1,15 +1,16 @@
 #include "gmock/gmock-matchers.h"
 #include "DisplayObject.h"
-#include <ostream>
+#include "DisplayObjectContainer.h"
 
 using namespace testing;
 using Mat4 = flash::math::Mat4;
 using DisplayObject = flash::display::DisplayObject;
+using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Rectangle = flash::core::Rectangle;
 
 std::string toString(const Mat4& m) {
     char buf[160];
-    sprintf(buf, "[%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f]"
+    sprintf(buf, "[%.2f, %.2f, %.2f, %.2f,   %.2f, %.2f, %.2f, %.2f,   %.2f, %.2f, %.2f, %.2f,   %.2f, %.2f, %.2f, %.2f]"
             , m.v1.x, m.v1.y, m.v1.z, m.v1.w, m.v2.x, m.v2.y, m.v2.z, m.v2.w
             , m.v3.x, m.v3.y, m.v3.z, m.v3.w, m.vt.x, m.vt.y, m.vt.z, m.vt.w);
     return std::string(buf);
@@ -23,6 +24,13 @@ std::string toString(const Rectangle& rect) {
 
 class DisplayObjectTest : public testing::Test {
 public:
+
+    Mat4 getTransform(float x, float y, float w, float h) {
+        Mat4 m;
+        m.translate(x + w * 0.5f, y + h * 0.5f, 0);
+        m.scale(w, h, 0);
+        return m;
+    }
 
     ::testing::AssertionResult RectanglesEQ(const Rectangle& actual, const Rectangle& expected) {
         if (actual != expected) {
@@ -126,6 +134,10 @@ TEST_F(DisplayObjectTest, SetVisible) {
     ASSERT_EQ(displayObject.visible(), true);
 }
 
+TEST_F(DisplayObjectTest, NewObjectHasNoParent) {
+    ASSERT_FALSE(displayObject.getParent() != nullptr);
+}
+
 TEST_F(DisplayObjectTest, GetBoundsInOwnSpace) {
     displayObject.setX(10);
     displayObject.setY(10);
@@ -146,8 +158,26 @@ TEST_F(DisplayObjectTest, getTransfomrForPositionAndSize) {
     displayObject.setWidth(w);
     displayObject.setHeight(h);
     
-    Mat4 m;
-    m.translate(x + w / 2, y + h / 2, 0);
-    m.scale(w, h, 0);
-    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), m));
+    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), getTransform(x, y, w, h)));
+}
+
+TEST_F(DisplayObjectTest, getRalativeTransformReturnsIdentity_ifNoParent) {
+    DisplayObjectContainer notParent;
+    displayObject.setWidth(2);
+    displayObject.setY(10);
+    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&notParent), Mat4::IDENTITY));
+}
+
+TEST_F(DisplayObjectTest, getRalativeTransformReturnsInParentsSpace_ifParentGiven) {
+    DisplayObjectContainer parent;
+    parent.addChild(&displayObject);
+    int x = 10;
+    int y = 20;
+    int w = 40;
+    int h = 60;
+    displayObject.setX(x);
+    displayObject.setY(y);
+    displayObject.setWidth(w);
+    displayObject.setHeight(h);
+    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&parent), getTransform(x, y, w, h)));
 }

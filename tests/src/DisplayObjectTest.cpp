@@ -25,10 +25,10 @@ std::string toString(const Rectangle& rect) {
 class DisplayObjectTest : public testing::Test {
 public:
 
-    Mat4 getTransform(float x, float y, float w, float h) {
+    Mat4 getTransform(float x, float y, float scaleX, float scaleY) {
         Mat4 m;
-        m.translate(x + w * 0.5f, y + h * 0.5f, 0);
-        m.scale(w, h, 0);
+        m.translate(x, y, 0);
+        m.scale(scaleX, scaleY, 0);
         return m;
     }
 
@@ -48,6 +48,18 @@ public:
     }
 
     DisplayObject displayObject;
+};
+
+class DisplayObjectGetTransformTest : public DisplayObjectTest {
+public:
+
+    void makeHierarchy() {
+        grandparent.addChild(&parent);
+        parent.addChild(&displayObject);
+    }
+
+    DisplayObjectContainer parent;
+    DisplayObjectContainer grandparent;
 };
 
 TEST_F(DisplayObjectTest, SetWidth) {
@@ -145,39 +157,59 @@ TEST_F(DisplayObjectTest, GetBoundsInOwnSpace) {
     displayObject.setHeight(35);
     Rectangle r = displayObject.getBounds(&displayObject);
     ASSERT_TRUE(RectanglesEQ(r, {0, 0, 33, 35}));
-
 }
 
-TEST_F(DisplayObjectTest, getTransfomrForPositionAndSize) {
+TEST_F(DisplayObjectGetTransformTest, ForPositionAndScale) {
     int x = 10;
     int y = 20;
     int w = 40;
     int h = 60;
     displayObject.setX(x);
     displayObject.setY(y);
-    displayObject.setWidth(w);
-    displayObject.setHeight(h);
+    displayObject.setScaleX(w);
+    displayObject.setScaleY(h);
     
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), getTransform(x, y, w, h)));
 }
 
-TEST_F(DisplayObjectTest, getRalativeTransformReturnsIdentity_ifNoParent) {
+TEST_F(DisplayObjectGetTransformTest, ReturnsIdentity_ifNoParent) {
     DisplayObjectContainer notParent;
     displayObject.setWidth(2);
     displayObject.setY(10);
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&notParent), Mat4::IDENTITY));
 }
 
-TEST_F(DisplayObjectTest, getRalativeTransformReturnsInParentsSpace_ifParentGiven) {
-    DisplayObjectContainer parent;
-    parent.addChild(&displayObject);
+TEST_F(DisplayObjectGetTransformTest, ReturnsInParentsSpace_ifParentGiven) {
+    makeHierarchy();
     int x = 10;
     int y = 20;
     int w = 40;
     int h = 60;
     displayObject.setX(x);
     displayObject.setY(y);
-    displayObject.setWidth(w);
-    displayObject.setHeight(h);
+    displayObject.setScaleX(w);
+    displayObject.setScaleY(h);
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&parent), getTransform(x, y, w, h)));
+}
+
+TEST_F(DisplayObjectGetTransformTest, ReturnsInGrandParentsSpace_ifGrandParentGiven) {
+    makeHierarchy();
+    int x = 10;
+    int y = 20;
+    parent.setX(x);
+    parent.setY(y);
+    displayObject.setX(x);
+    displayObject.setY(y);
+    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&grandparent), getTransform(x * 2, y * 2, 1, 1)));
+    int scaleX = 2;
+    int scaleY = 3;
+    parent.setScaleX(scaleX);
+    parent.setScaleY(scaleY);
+    displayObject.setScaleX(scaleX);
+    displayObject.setScaleY(scaleY);
+    parent.setX(0);
+    parent.setY(0);
+    displayObject.setX(0);
+    displayObject.setY(0);
+    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&grandparent), getTransform(0, 0, scaleX * scaleX, scaleY * scaleY)));
 }

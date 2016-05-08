@@ -9,10 +9,10 @@ class ColorTest : public Test {
 public:
     ColorTest() {}
 
-    void assertColor(float r, float g, float b) {
-        ASSERT_THAT(color.r, FloatEq(r));
-        ASSERT_THAT(color.g, FloatEq(g));
-        ASSERT_THAT(color.b, FloatEq(b));
+    void assertColor(unsigned char r, unsigned char g, unsigned char b) {
+        ASSERT_THAT(color.r, Eq(r));
+        ASSERT_THAT(color.g, Eq(g));
+        ASSERT_THAT(color.b, Eq(b));
     }
 
     Color color;
@@ -25,144 +25,137 @@ TEST_F(ColorTest, DefaultConstructor) {
 }
 
 TEST_F(ColorTest, ValuesConstructor) {
-    color = Color(0.1, 0.5, 0.9);
-    assertColor(0.1, 0.5, 0.9);
+    color = Color(10, 100, 200);
+    assertColor(10, 100, 200);
 }
 
 TEST_F(ColorTest, Plus) {
-    color = Color(0.1, 0.2, 0.3) + Color(0.4, 0.5, 0.6);
-    assertColor(0.5, 0.7, 0.9);
+    color = Color(10, 100, 200) + Color(4, 50, 16);
+    assertColor(14, 150, 216);
 }
 
 TEST_F(ColorTest, PlusAssign) {
-    color = Color(0.1, 0.2, 0.3);
-    color += Color(0.4, 0.5, 0.6);
-    assertColor(0.5, 0.7, 0.9);
+    color = Color(10, 100, 200);
+    color += Color(4, 50, 16);
+    assertColor(14, 150, 216);
 }
 
 TEST_F(ColorTest, Minus) {
-    color = Color(0.4, 0.7, 1) - Color(0.1, 0.2, 0.3);
-    assertColor(0.3, 0.5, 0.7);
+    color = Color(10, 100, 200) - Color(5, 30, 100);
+    assertColor(5, 70, 100);
 }
 
 TEST_F(ColorTest, MinusAssign) {
-    color = Color(0.4, 0.7, 1);
-    color -= Color(0.1, 0.2, 0.3);
-    assertColor(0.3, 0.5, 0.7);
+    color = Color(10, 100, 200);
+    color -= Color(5, 30, 100);
+    assertColor(5, 70, 100);
 }
 
 TEST_F(ColorTest, Multiply) {
-    color = Color(0, 0.5, 1) * Color(0.6, 0.6, 0.6);
-    assertColor(0, 0.3, 0.6);
+    color = Color(0, 30, 45) * Color(56, 5, 4);
+    assertColor(0, 150, 180);
 }
 
 TEST_F(ColorTest, MultiplyAssign) {
-    color = Color(0, 0.5, 1);
-    color *= Color(0.6, 0.6, 0.6);
-    assertColor(0, 0.3, 0.6);
+    color = Color(0, 30, 45);
+    color *= Color(56, 5, 4);
+    assertColor(0, 150, 180);
 }
 
 TEST_F(ColorTest, Devide) {
-    color = Color(0, 0.1, 0.6) / Color(0.6, 0.1, 1);
-    assertColor(0, 1, 0.6);
+    color = Color(20, 0, 240) / Color(2, 23, 4);
+    assertColor(10, 0, 60);
 }
 
 TEST_F(ColorTest, DevideAssign) {
-    color = Color(0, 0.1, 0.6);
-    color /= Color(0.6, 0.1, 1);
-    assertColor(0, 1, 0.6);
+    color = Color(20, 0, 240);
+    color /= Color(2, 23, 4);
+    assertColor(10, 0, 60);
 }
 
 TEST_F(ColorScalarTest, Plus) {
-    color = Color(0.1, 0.2, 0.3) + 0.4;
-    assertColor(0.5, 0.6, 0.7);
+    color = Color(10, 100, 200) + 40;
+    assertColor(50, 140, 240);
 }
 
 TEST_F(ColorScalarTest, PlusAssign) {
-    color = Color(0.1, 0.2, 0.3);
-    color += 0.4;
-    assertColor(0.5, 0.6, 0.7);
+    color = Color(10, 100, 200);
+    color += 40;
+    assertColor(50, 140, 240);
 }
 
 TEST_F(ColorScalarTest, Minus) {
-    color = Color(0.4, 0.7, 1) - 0.4;
-    assertColor(0, 0.3, 0.6);
+    color = Color(40, 100, 200) - 40;
+    assertColor(0, 60, 160);
 }
 
 TEST_F(ColorScalarTest, MinusAssign) {
-    color = Color(0.4, 0.7, 1);
-    color -= 0.4;
-    assertColor(0, 0.3, 0.6);
+    color = Color(40, 100, 200);
+    color -= 40;
+    assertColor(0, 60, 160);
 }
 
 TEST_F(ColorScalarTest, Multiply) {
-    color = Color(0, 0.5, 1) * 0.6;
-    assertColor(0, 0.3, 0.6);
+    color = Color(0, 50, 100) * 0.6;
+    assertColor(0, 30, 60);
 }
 
 TEST_F(ColorScalarTest, MultiplyAssign) {
-    color = Color(0, 0.5, 1);
+    color = Color(0, 50, 100);
     color *= 0.6;
-    assertColor(0, 0.3, 0.6);
+    assertColor(0, 30, 60);
 }
 
 TEST_F(ColorScalarTest, Devide) {
-    color = Color(0, 0.1, 0.05) / 0.1;
-    assertColor(0, 1, 0.5);
+    color = Color(0, 10, 20) / 0.1;
+    assertColor(0, 100, 200);
 }
 
 TEST_F(ColorScalarTest, DevideAssign) {
-    color = Color(0, 0.1, 0.05);
+    color = Color(0, 10, 20);
     color /= 0.1;
-    assertColor(0, 1, 0.5);
+    assertColor(0, 100, 200);
 }
 
 TEST_F(ColorTest, ConversationToUint) {
-    unsigned r = Color(1, 0, 0).uint();
-    unsigned g = Color(0, 1, 0).uint();
-    unsigned b = Color(0, 0, 1).uint();
-    unsigned mix = Color(0.8, 0.2, 0.4).uint();
+    unsigned r = Color(0xFF, 0, 0).uint();
+    unsigned g = Color(0, 0xFF, 0).uint();
+    unsigned b = Color(0, 0, 0xFF).uint();
+    unsigned mix = Color(196, 64, 128).uint();
     ASSERT_THAT(r, Eq(16711680));
     ASSERT_THAT(g, Eq(65280));
     ASSERT_THAT(b, Eq(255));
-    ASSERT_THAT(mix, Eq(13382502));
+    ASSERT_THAT(mix, Eq((196 << 16) | (64 << 8) | 128));
 }
 
 TEST_F(ColorTest, IntegerConstructor) {
-    color = Color(16711680);
-    assertColor(1, 0, 0);
-    color = Color(65280);
-    assertColor(0, 1, 0);
-    color = Color(255);
-    assertColor(0, 0, 1);
-}
-
-TEST_F(ColorTest, Clamp) {
-    color = Color(0.3, 1.6, 3);
-    color.clamp();
-    assertColor(0.3, 1, 1);
+    color = Color(0xFF << 16);
+    assertColor(0xFF, 0, 0);
+    color = Color(0xFF << 8);
+    assertColor(0, 0xFF, 0);
+    color = Color(0xFF);
+    assertColor(0, 0, 0xFF);
 }
 
 TEST_F(ColorTest, SetBytes) {
-    unsigned char R = 10;
-    unsigned char G = 55;
-    unsigned char B = 200;
+    float R = 0.1;
+    float G = 0.5;
+    float B = 0.9;
     color.setR(R);
     color.setG(G);
     color.setB(B);
-    float converter = 1.f / 0xFF;
+    unsigned converter = 0xFF;
     assertColor(R * converter, G * converter, B * converter);
 }
 
 TEST_F(ColorTest, GetBytes) {
-    unsigned char R = 10;
-    unsigned char G = 55;
-    unsigned char B = 200;
+    float R = 0.1;
+    float G = 0.5;
+    float B = 0.9;
     color.setR(R);
     color.setG(G);
     color.setB(B);
-    float converter = 1.f / 0xFF;
-    ASSERT_THAT(color.R(), Eq(R));
-    ASSERT_THAT(color.G(), Eq(G));
-    ASSERT_THAT(color.B(), Eq(B));
+    ASSERT_THAT(color.R(), FloatNear(R, 0.02));
+    ASSERT_THAT(color.G(), FloatNear(G, 0.02));
+    ASSERT_THAT(color.B(), FloatNear(B, 0.02));
 }

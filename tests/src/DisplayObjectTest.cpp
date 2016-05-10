@@ -51,6 +51,9 @@ public:
 };
 
 class DisplayObjectGetTransformTest : public DisplayObjectTest {
+};
+
+class DisplayObjectGetRelativeTransformTest : public DisplayObjectGetTransformTest {
 public:
 
     void makeHierarchy() {
@@ -172,14 +175,14 @@ TEST_F(DisplayObjectGetTransformTest, ForPositionAndScale) {
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), getTransform(x, y, w, h)));
 }
 
-TEST_F(DisplayObjectGetTransformTest, ReturnsIdentity_ifNoParent) {
+TEST_F(DisplayObjectGetRelativeTransformTest, ReturnsIdentity_ifNoParent) {
     DisplayObjectContainer notParent;
     displayObject.setWidth(2);
     displayObject.setY(10);
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&notParent), Mat4::IDENTITY));
 }
 
-TEST_F(DisplayObjectGetTransformTest, ReturnsInParentsSpace_ifParentGiven) {
+TEST_F(DisplayObjectGetRelativeTransformTest, ReturnsInParentsSpace_ifParentGiven) {
     makeHierarchy();
     int x = 10;
     int y = 20;
@@ -192,7 +195,7 @@ TEST_F(DisplayObjectGetTransformTest, ReturnsInParentsSpace_ifParentGiven) {
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&parent), getTransform(x, y, w, h)));
 }
 
-TEST_F(DisplayObjectGetTransformTest, ReturnsInGrandParentsSpace_ifGrandParentGiven) {
+TEST_F(DisplayObjectGetRelativeTransformTest, ReturnsInGrandParentsSpace_ifGrandParentGiven) {
     makeHierarchy();
     int x = 10;
     int y = 20;

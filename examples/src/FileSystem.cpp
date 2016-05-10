@@ -1,7 +1,9 @@
-#include <boost/filesystem/operations.hpp>
+//#include <boost/filesystem/operations.hpp>
 
+#include <string>
 #include "FileSystem.h"
 
 std::string FileSystem::currentPath() {
-    return boost::filesystem::current_path().string();
+    return "";
+//    return boost::filesystem::current_path().string();
 }

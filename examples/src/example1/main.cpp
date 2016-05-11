@@ -94,31 +94,29 @@ int main(int argc, const char** argv) {
 int main(int argc, const char** argv) {
     Stage stage(800, 600);
 
-    DisplayObject obj1;
+    /*DisplayObject obj1;
     obj1.setScaleX(80);
     obj1.setScaleY(20);
     obj1.setX(20);
-//    obj1.setY(20);
+    obj1.setY(20);
 
     DisplayObjectContainer parent;
     parent.setY(20);
     parent.addChild(&obj1);
 
-//    stage.addChild(&parent);
+    stage.addChild(&parent);
 
 
     DisplayObject obj2;
-//    obj2.setWidth(40);
-//    obj2.setHeight(100);
     obj2.setScaleX(40);
     obj2.setScaleY(100);
     obj2.setX(740);
     obj2.setY(480);
-//    stage.addChild(&obj2);
+    stage.addChild(&obj2);*/
 
 
     flash::filesystem::FileLoader loader;
-    loader.load("wood_small.jpg");
+    loader.load("texture_big.jpg");
 
     if (loader.size()) {
         flash::display::Texture* texture = (Texture*) loader.data();

@@ -22,5 +22,7 @@ include(flash_display)
 
 add_subdirectory(tests)
 
+add_subdirectory(render_tests)
+
 add_subdirectory(examples)
 

@@ -1,4 +1,4 @@
-function(add_render_test target)
+function(add_offscreen_render target)
 #    set(BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/${target})
 #    file(MAKE_DIRECTORY ${BIN_DIR})
     file(GLOB ${target}_SOURCE_FILES ${SOURCE_DIR}/${target}/*.cpp ${SOURCE_DIR}/*.cpp)

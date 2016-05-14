@@ -8,6 +8,6 @@ set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${flash_display_INCLUDE_DIRS})
 
-include(render_tests)
+include(offscreen_render)
 
-add_render_test(main_render_test)
+add_offscreen_render(offscreen_render)

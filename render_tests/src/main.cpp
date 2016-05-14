@@ -6,84 +6,99 @@
 
 using namespace flash::display;
 
+class Test {
+public:
+    virtual ~Test() = default;
+
+    virtual void setUp() {}
+    
+    virtual void tearDown() {}
+};
+
 Stage stage = Stage(100, 100);
 
-DisplayObject* obj1;
-DisplayObject* obj2;
-DisplayObject* obj3;
-DisplayObject* obj5;
-DisplayObject* obj4;
-
-void test1() {
-    constexpr unsigned mul = 10;
-
-    obj1 = new DisplayObject();
-    obj1->setScaleX(1 * mul);
-    obj1->setScaleY(10 * mul);
-    obj1->setX(0 * mul);
-    obj1->setY(0 * mul);
-    stage.addChild(obj1);
-
-    obj2 = new DisplayObject();
-    obj2->setScaleX(1 * mul);
-    obj2->setScaleY(10 * mul);
-    obj2->setX(9 * mul);
-    obj2->setY(0 * mul);
-    stage.addChild(obj2);
-
-    obj3 = new DisplayObject();
-    obj3->setScaleX(10 * mul);
-    obj3->setScaleY(1 * mul);
-    obj3->setX(0 * mul);
-    obj3->setY(0 * mul);
-    stage.addChild(obj3);
-
-    obj4 = new DisplayObject();
-    obj4->setScaleX(10 * mul);
-    obj4->setScaleY(1 * mul);
-    obj4->setX(0 * mul);
-    obj4->setY(9 * mul);
-    stage.addChild(obj4);
-
-    obj5 = new DisplayObject();
-    obj5->setScaleX(6 * mul);
-    obj5->setScaleY(6 * mul);
-    obj5->setX(2 * mul);
-    obj5->setY(2 * mul);
-    stage.addChild(obj5);
-}
+Test* currentTest{nullptr};
 
 int testIndex = -1;
 
-void offscreenCallback() {
-    std::cout << "offscreenCallback" << std::endl;
-    if (++testIndex == 0) {
-        test1();
-    } else {
-        std::terminate();
+class Test1 : public Test {
+public:
+    static constexpr unsigned mul = 10;
+
+    void setUp() override {
+        m_obj1 = new DisplayObject();
+        m_obj1->setScaleX(1 * mul);
+        m_obj1->setScaleY(10 * mul);
+        m_obj1->setX(0 * mul);
+        m_obj1->setY(0 * mul);
+        stage.addChild(m_obj1);
+
+        m_obj2 = new DisplayObject();
+        m_obj2->setScaleX(1 * mul);
+        m_obj2->setScaleY(10 * mul);
+        m_obj2->setX(9 * mul);
+        m_obj2->setY(0 * mul);
+        stage.addChild(m_obj2);
+
+        m_obj3 = new DisplayObject();
+        m_obj3->setScaleX(10 * mul);
+        m_obj3->setScaleY(1 * mul);
+        m_obj3->setX(0 * mul);
+        m_obj3->setY(0 * mul);
+        stage.addChild(m_obj3);
+
+        m_obj4 = new DisplayObject();
+        m_obj4->setScaleX(10 * mul);
+        m_obj4->setScaleY(1 * mul);
+        m_obj4->setX(0 * mul);
+        m_obj4->setY(9 * mul);
+        stage.addChild(m_obj4);
+
+        m_obj5 = new DisplayObject();
+        m_obj5->setScaleX(6 * mul);
+        m_obj5->setScaleY(6 * mul);
+        m_obj5->setX(2 * mul);
+        m_obj5->setY(2 * mul);
+        stage.addChild(m_obj5);
     }
-}
 
-int main(int argc, const char** argv) {
-    stage.start();
+    void tearDown() override {
+        delete m_obj1;
+        delete m_obj2;
+        delete m_obj3;
+        delete m_obj4;
+        delete m_obj5;
+    }
 
-    return 0;
-}
+private:
+    DisplayObject* m_obj1;
+    DisplayObject* m_obj2;
+    DisplayObject* m_obj3;
+    DisplayObject* m_obj4;
+    DisplayObject* m_obj5;
+};
 
-void test2() {
-    unsigned mul = 10;
-    Stage stage(10 * mul, 10 * mul);
+class Test2 : public Test {
+public:
+    static constexpr unsigned mul = 10;
 
-    DisplayObject obj1;
-    obj1.setScaleX(8 * mul);
-    obj1.setScaleY(8 * mul);
-    obj1.setX(1 * mul);
-    obj1.setY(1 * mul);
+    void setUp() override {
+        m_obj = new DisplayObject();
+        m_obj->setScaleX(8 * mul);
+        m_obj->setScaleY(8 * mul);
+        m_obj->setX(1 * mul);
+        m_obj->setY(1 * mul);
 
-    stage.addChild(&obj1);
+        stage.addChild(m_obj);
+    }
 
-    stage.start();
-}
+    void tearDown() override {
+        delete m_obj;
+    }
+
+private:
+    DisplayObject* m_obj;
+};
 
 void tets3() {
     Stage stage(100, 100);
@@ -104,6 +119,34 @@ void tets3() {
     stage.addChild(&obj2);
 
     stage.start();
+}
+
+const char* nextOffscreen() {
+    if (currentTest) {
+        currentTest->tearDown();
+        delete currentTest;
+        stage.removeChildren();
+    }
+    ++testIndex;
+    const char* name;
+    if (testIndex == 0) {
+        currentTest = new Test1();
+        name = "test1";
+    } else if (testIndex == 1) {
+        currentTest = new Test2();
+        name = "test2";
+    } else {
+        std::terminate();
+    }
+
+    currentTest->setUp();
+    return name;
+}
+
+int main(int argc, const char** argv) {
+    stage.start();
+
+    return 0;
 }
 
 /*int main(int argc, const char** argv) {

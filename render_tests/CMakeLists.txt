@@ -11,3 +11,5 @@ include_directories(${flash_display_INCLUDE_DIRS})
 include(offscreen_render)
 
 add_offscreen_render(offscreen_render)
+
+add_subdirectory(image_dif)

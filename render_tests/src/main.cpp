@@ -2,7 +2,7 @@
 #include <FileLoader.h>
 #include <Texture.h>
 #include <Bitmap.h>
-#include <iostream>
+#include <vector>
 
 using namespace flash::display;
 
@@ -15,11 +15,15 @@ public:
     virtual void tearDown() {}
 };
 
+std::vector<std::pair<const char*, Test*>> tests;
+
 Stage stage = Stage(100, 100);
 
 Test* currentTest{nullptr};
 
-int testIndex = -1;
+int testIndex = 0;
+
+#define RENDER(TestClass) tests.emplace_back(#TestClass, new TestClass());
 
 class Test1 : public Test {
 public:
@@ -127,23 +131,24 @@ const char* nextOffscreen() {
         delete currentTest;
         stage.removeChildren();
     }
-    ++testIndex;
+
     const char* name;
-    if (testIndex == 0) {
-        currentTest = new Test1();
-        name = "test1";
-    } else if (testIndex == 1) {
-        currentTest = new Test2();
-        name = "test2";
+    if (testIndex < tests.size()) {
+        currentTest = tests[testIndex].second;
+        name = tests[testIndex].first;
     } else {
         std::terminate();
     }
-
     currentTest->setUp();
+
+    ++testIndex;
     return name;
 }
 
 int main(int argc, const char** argv) {
+    RENDER(Test1);
+    RENDER(Test2);
+
     stage.start();
 
     return 0;

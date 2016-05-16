@@ -3,6 +3,9 @@
 #include <memory.h>
 #include <stdarg.h>
 
+char outputFileName[1024];
+char firstImageFolder[1024];
+
 void abort_(const char* s, ...) {
     va_list args;
     va_start(args, s);
@@ -107,7 +110,7 @@ void savePNG(const char *filename, int width, int height, png_byte* data) {
     for (i = 0; i < nvals; i++)
         (png_bytes)[i] = (data)[i];
     for (i = 0; i < height; i++)
-        (png_rows)[height - i - 1] = &(png_bytes)[i * width * format_nchannels];
+        (png_rows)[i] = &(png_bytes)[i * width * format_nchannels];
     png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (!png) abort();
     png_infop info = png_create_info_struct(png);
@@ -134,9 +137,14 @@ void savePNG(const char *filename, int width, int height, png_byte* data) {
 }
 
 int main(int argc, char** argv) {
+    size_t outputFolderLength = 0;
     if (argc < 3) {
-        printf("Usage: %s <path_to_image1> <path_to_image2>", argv[0]);
+        printf("Usage: %s <path_to_image1> <path_to_image2> [<outputFolder>]", argv[0]);
+    } else if (argc > 3) {
+        outputFolderLength = strlen(argv[3]);
     }
+
+    printf(">>>> compare images: \n    1. %s\n    2. %s\n", argv[1], argv[2]);
 
     ImageData im1;
     read_png_file(argv[1], &im1);
@@ -155,19 +163,33 @@ int main(int argc, char** argv) {
     char* nameBeg = strrchr(argv[1], '/');
     if (nameBeg == NULL) {
         nameBeg = argv[1];
+    } else {
+        nameBeg++;
     }
     char* dotPos = strrchr(argv[1], '.');
     if (dotPos == NULL) {
         fprintf(stderr, "File has no extension: %s", argv[1]);
         return -1;
     }
-    char diffName[255];
-    strncpy(diffName, nameBeg, dotPos - nameBeg);
-    strcat(diffName, "_diff");
-    strcat(diffName, dotPos);
 
-    printf("image difference: %.2f", diff);
-    savePNG(diffName, im1.width, im1.height, diffIm);
+    strncpy(firstImageFolder, argv[1], nameBeg - argv[1]);
+
+    // if first image folder and output folder are the same
+    if (!outputFolderLength || strcmp(argv[3], firstImageFolder) == 0) {
+        strcpy(outputFileName, firstImageFolder);
+        strncat(outputFileName, nameBeg, dotPos - nameBeg);
+        strcat(outputFileName, "_diff");
+        strcat(outputFileName, dotPos);
+    } else {
+        strcpy(outputFileName, argv[3]);
+        outputFileName[outputFolderLength] = '/';
+        outputFileName[outputFolderLength + 1] = '\0';
+        strcat(outputFileName, nameBeg);
+    }
+
+    printf("    -> %s  (%.2f)\n", outputFileName, diff);
+
+    savePNG(outputFileName, im1.width, im1.height, diffIm);
 
     return 0;
 }

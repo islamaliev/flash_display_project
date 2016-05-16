@@ -17,6 +17,8 @@ namespace offscreen {
 
     void initFixtures();
 
+    void clearFixtures();
+
     class Test {
     public:
         virtual ~Test() {};

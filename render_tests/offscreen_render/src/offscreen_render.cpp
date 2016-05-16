@@ -14,7 +14,6 @@ int testIndex = 0;
 const char* nextOffscreen() {
     if (currentTest) {
         currentTest->tearDown();
-        delete currentTest;
         offscreen::stage->removeChildren();
     }
 
@@ -24,6 +23,7 @@ const char* nextOffscreen() {
         strcat(path, offscreen::tests[testIndex].first);
     } else {
         offscreen::stage->stop();
+        offscreen::clearFixtures();
         return "";
     }
     currentTest->setUp();
@@ -46,46 +46,3 @@ int main(int argc, const char** argv) {
 
     return 0;
 }
-
-/*int main(int argc, const char** argv) {
-    Stage stage(800, 600);
-
-    DisplayObject obj1;
-    obj1.setScaleX(80);
-    obj1.setScaleY(20);
-    obj1.setX(20);
-    obj1.setY(20);
-
-    DisplayObjectContainer parent;
-    parent.setY(20);
-    parent.addChild(&obj1);
-
-    stage.addChild(&parent);
-
-
-    DisplayObject obj2;
-    obj2.setScaleX(40);
-    obj2.setScaleY(100);
-    obj2.setX(740);
-    obj2.setY(480);
-    stage.addChild(&obj2);
-
-
-    flash::filesystem::FileLoader loader;
-    loader.load("texture_big.jpg");
-
-    if (loader.size()) {
-        flash::display::Texture* texture = (Texture*) loader.data();
-
-        flash::display::Bitmap bitmap;
-        bitmap.setTexture(texture);
-        bitmap.setX(200);
-        bitmap.setY(150);
-        bitmap.setScaleX(400);
-        bitmap.setScaleY(300);
-        stage.addChild(&bitmap);
-    }
-    stage.start();
-
-    return 0;
-}*/

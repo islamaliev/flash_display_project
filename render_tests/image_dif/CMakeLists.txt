@@ -23,6 +23,6 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 #include(offscreen_render)
 
-add_executable(image_dif ${SOURCE_DIR}/image_dif.c)
+add_executable(image_dif ${SOURCE_DIR}/image_diff.c)
 target_link_libraries(image_dif ${PNG_LIBRARIES})
 set_target_properties(image_dif PROPERTIES LINKER_LANGUAGE C)

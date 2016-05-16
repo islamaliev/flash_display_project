@@ -98,12 +98,47 @@ private:
     DisplayObjectContainer* m_parent;
 };
 
+
+
+class ChildInMovedParentAndGrandParent : public Test {
+public:
+    void setUp() override {
+        m_child = new DisplayObject();
+        m_child->setScaleX(40);
+        m_child->setScaleY(40);
+
+        m_parent = new DisplayObjectContainer();
+        m_parent->setX(20);
+        m_parent->setY(20);
+
+        m_grandparent = new DisplayObjectContainer();
+        m_grandparent->setX(20);
+        m_grandparent->setY(20);
+
+        m_parent->addChild(m_child);
+        m_grandparent->addChild(m_parent);
+        stage->addChild(m_grandparent);
+    }
+
+    void tearDown() override {
+        delete m_child;
+        delete m_parent;
+        delete m_grandparent;
+    };
+
+private:
+    DisplayObject* m_child;
+    DisplayObjectContainer* m_parent;
+    DisplayObjectContainer* m_grandparent;
+};
+
 void offscreen::initFixtures() {
     stage = new flash::display::Stage(W, H);
     RENDER(ScaledChild);
     RENDER(ScaledMovedChild);
     RENDER(TwoChildrenAtCorners);
     RENDER(ChildInMovedContainer);
+    RENDER(ChildInMovedParentAndGrandParent);
 }
 
 void offscreen::clearFixtures() {

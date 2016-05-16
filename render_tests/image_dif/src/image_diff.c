@@ -160,6 +160,11 @@ int main(int argc, char** argv) {
     unsigned char* diffIm = (unsigned char*) malloc(im1.width * im1.height * 3 * sizeof(unsigned char));
     float diff = calculateDiff(&im1, &im2, diffIm);
 
+    if (diff == 0) {
+        printf("    -> NO DIFFERENCE\n");
+        return 0;
+    }
+
     char* nameBeg = strrchr(argv[1], '/');
     if (nameBeg == NULL) {
         nameBeg = argv[1];

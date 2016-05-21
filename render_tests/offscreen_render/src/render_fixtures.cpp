@@ -192,7 +192,7 @@ class FullscreenTexture : public TextureTest {
 public:
     void setUp() override {
         TextureTest::setUp();
-        Bitmap* bitmap = prepareBitmap("texture_small.jpg");
+        Bitmap* bitmap = prepareBitmap("texture.jpg");
         bitmap->setX(0);
         bitmap->setY(0);
         bitmap->setScaleX(W);
@@ -204,7 +204,7 @@ class TextureAndDisplayObject : public TextureTest {
 public:
     void setUp() override {
         TextureTest::setUp();
-        Bitmap* bitmap = prepareBitmap("texture_small.jpg");
+        Bitmap* bitmap = prepareBitmap("texture.jpg");
         bitmap->setX(W * 0.1f);
         bitmap->setY(H * 0.1f);
         bitmap->setScaleX(W * 0.8f);
@@ -231,13 +231,13 @@ class TwoTextures : public TextureTest {
 public:
     void setUp() override {
         TextureTest::setUp();
-        Bitmap* bitmap = prepareBitmap("texture_small.jpg");
+        Bitmap* bitmap = prepareBitmap("texture.jpg");
         bitmap->setX(0);
         bitmap->setY(H * 0.5f);
         bitmap->setScaleX(W * 0.5f);
         bitmap->setScaleY(H * 0.5f);
 
-        Bitmap* bitmap2 = prepareBitmap("texture2_small.jpg");
+        Bitmap* bitmap2 = prepareBitmap("texture2.jpg");
         bitmap2->setX(W * 0.5f);
         bitmap2->setY(0);
         bitmap2->setScaleX(W * 0.5f);

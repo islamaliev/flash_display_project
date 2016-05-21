@@ -98,23 +98,12 @@ private:
     DisplayObjectContainer* m_parent;
 };
 
-
-
-class ChildInMovedParentAndGrandParent : public Test {
+class GrandParentTest : public Test {
 public:
     void setUp() override {
         m_child = new DisplayObject();
-        m_child->setScaleX(40);
-        m_child->setScaleY(40);
-
         m_parent = new DisplayObjectContainer();
-        m_parent->setX(20);
-        m_parent->setY(20);
-
         m_grandparent = new DisplayObjectContainer();
-        m_grandparent->setX(20);
-        m_grandparent->setY(20);
-
         m_parent->addChild(m_child);
         m_grandparent->addChild(m_parent);
         stage->addChild(m_grandparent);
@@ -126,10 +115,134 @@ public:
         delete m_grandparent;
     };
 
-private:
+protected:
     DisplayObject* m_child;
     DisplayObjectContainer* m_parent;
     DisplayObjectContainer* m_grandparent;
+};
+
+class ChildInMovedParentAndGrandParent : public GrandParentTest {
+public:
+    void setUp() override {
+        GrandParentTest::setUp();
+
+        m_child->setScaleX(40);
+        m_child->setScaleY(40);
+
+        m_parent->setX(20);
+        m_parent->setY(20);
+
+        m_grandparent->setX(20);
+        m_grandparent->setY(20);
+    }
+};
+
+class ChildInScaledParentAndGrandParent : public GrandParentTest {
+public:
+    void setUp() override {
+        GrandParentTest::setUp();
+
+        m_child->setScaleX(10);
+        m_child->setScaleY(10);
+
+        m_parent->setScaleX(2);
+        m_parent->setScaleY(2);
+
+        m_grandparent->setScaleX(2);
+        m_grandparent->setScaleY(2);
+    }
+};
+
+class TextureTest : public Test {
+public:
+    void setUp() override {
+    }
+
+    Bitmap* prepareBitmap(const char* texturePath) {
+        flash::filesystem::FileLoader loader;
+        loader.load(texturePath);
+
+        if (loader.size()) {
+            Texture* texture = (Texture*) loader.data();
+            Bitmap* bitmap = new Bitmap();
+            bitmap->setTexture(texture);
+            stage->addChild(bitmap);
+            m_bitmaps.push_back(bitmap);
+            m_textures.push_back(texture);
+            return bitmap;
+        }
+        return nullptr;
+    }
+
+    virtual void tearDown() override {
+        for (auto texture : m_textures) {
+            texture->dispose();
+        }
+        for (auto bitmap : m_bitmaps) {
+            delete bitmap;
+        }
+    }
+
+protected:
+    std::vector<Bitmap*> m_bitmaps;
+    std::vector<Texture*> m_textures;
+};
+
+class FullscreenTexture : public TextureTest {
+public:
+    void setUp() override {
+        TextureTest::setUp();
+        Bitmap* bitmap = prepareBitmap("texture_small.jpg");
+        bitmap->setX(0);
+        bitmap->setY(0);
+        bitmap->setScaleX(W);
+        bitmap->setScaleY(H);
+    }
+};
+
+class TextureAndDisplayObject : public TextureTest {
+public:
+    void setUp() override {
+        TextureTest::setUp();
+        Bitmap* bitmap = prepareBitmap("texture_small.jpg");
+        bitmap->setX(W * 0.1f);
+        bitmap->setY(H * 0.1f);
+        bitmap->setScaleX(W * 0.8f);
+        bitmap->setScaleY(H * 0.4f);
+
+        m_displayObject = new DisplayObject();
+        m_displayObject->setX(W * 0.1f);
+        m_displayObject->setY(H * 0.6f);
+        m_displayObject->setScaleX(W * 0.8f);
+        m_displayObject->setScaleY(H * 0.3f);
+        stage->addChild(m_displayObject);
+    }
+
+    virtual void tearDown() override {
+        TextureTest::tearDown();
+        delete m_displayObject;
+    }
+
+private:
+    DisplayObject* m_displayObject{nullptr};
+};
+
+class TwoTextures : public TextureTest {
+public:
+    void setUp() override {
+        TextureTest::setUp();
+        Bitmap* bitmap = prepareBitmap("texture_small.jpg");
+        bitmap->setX(0);
+        bitmap->setY(H * 0.5f);
+        bitmap->setScaleX(W * 0.5f);
+        bitmap->setScaleY(H * 0.5f);
+
+        Bitmap* bitmap2 = prepareBitmap("texture2_small.jpg");
+        bitmap2->setX(W * 0.5f);
+        bitmap2->setY(0);
+        bitmap2->setScaleX(W * 0.5f);
+        bitmap2->setScaleY(H * 0.5f);
+    }
 };
 
 void offscreen::initFixtures() {
@@ -139,6 +252,10 @@ void offscreen::initFixtures() {
     RENDER(TwoChildrenAtCorners);
     RENDER(ChildInMovedContainer);
     RENDER(ChildInMovedParentAndGrandParent);
+    RENDER(ChildInScaledParentAndGrandParent);
+    RENDER(FullscreenTexture);
+    RENDER(TextureAndDisplayObject);
+    RENDER(TwoTextures);
 }
 
 void offscreen::clearFixtures() {

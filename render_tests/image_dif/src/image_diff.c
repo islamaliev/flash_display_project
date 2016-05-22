@@ -80,20 +80,17 @@ float calculateDiff(ImageData* im1, ImageData* im2, png_byte* diffIm) {
             png_byte* px1 = &(row1[x * 3]);
             png_byte* px2 = &(row2[x * 3]);
 
-            int r1 = px1[0];
-            int g1 = px1[1];
-            int b1 = px1[2];
-            int r2 = px2[0];
-            int g2 = px2[1];
-            int b2 = px2[2];
-
             int ind = (y * im1->width + x) * 3;
-            int r = diffIm[ind] = (unsigned char) abs(r1 - r2);
-            int g = diffIm[ind + 1] = (unsigned char) abs(g1 - g2);
-            int b = diffIm[ind + 2] = (unsigned char) abs(b1 - b2);
-            diff += r * div;
-            diff += g * div;
-            diff += b * div;
+            float r = diffIm[ind] = (unsigned char) abs(px1[0] - px2[0]);
+            float g = diffIm[ind + 1] = (unsigned char) abs(px1[1] - px2[1]);
+            float b = diffIm[ind + 2] = (unsigned char) abs(px1[2] - px2[2]);
+            // transform channel diff to [1, 2] so that exponent is more sensible
+            r  = r * div + 1;
+            g  = g * div + 1;
+            b  = b * div + 1;
+            diff += r * r * r - 1;
+            diff += g * g * g - 1;
+            diff += b * b * b - 1;
         }
     }
     return diff;
@@ -144,7 +141,24 @@ int main(int argc, char** argv) {
         outputFolderLength = strlen(argv[3]);
     }
 
-    printf(">>>> compare images: \n    1. %s\n    2. %s\n", argv[1], argv[2]);
+    char* nameBeg = strrchr(argv[1], '/');
+    if (nameBeg == NULL) {
+        nameBeg = argv[1];
+    } else {
+        nameBeg++;
+    }
+    char* dotPos = strrchr(argv[1], '.');
+    if (dotPos == NULL) {
+        fprintf(stderr, "File has no extension: %s", argv[1]);
+        return -1;
+    }
+
+    unsigned long nameLen = dotPos - nameBeg + 1;
+    char* name = malloc(nameLen);
+    strncpy(name, nameBeg, dotPos - nameBeg);
+    name[nameLen - 1] = '\0';
+
+    printf("    %s", name);
 
     ImageData im1;
     read_png_file(argv[1], &im1);
@@ -160,21 +174,10 @@ int main(int argc, char** argv) {
     unsigned char* diffIm = (unsigned char*) malloc(im1.width * im1.height * 3 * sizeof(unsigned char));
     float diff = calculateDiff(&im1, &im2, diffIm);
 
-    if (diff == 0) {
-        printf("    -> NO DIFFERENCE\n");
-        return 0;
-    }
-
-    char* nameBeg = strrchr(argv[1], '/');
-    if (nameBeg == NULL) {
-        nameBeg = argv[1];
+    if (diff > 0) {
+        printf("    (%.2f)\n", diff);
     } else {
-        nameBeg++;
-    }
-    char* dotPos = strrchr(argv[1], '.');
-    if (dotPos == NULL) {
-        fprintf(stderr, "File has no extension: %s", argv[1]);
-        return -1;
+        printf("\n");
     }
 
     strncpy(firstImageFolder, argv[1], nameBeg - argv[1]);
@@ -192,9 +195,9 @@ int main(int argc, char** argv) {
         strcat(outputFileName, nameBeg);
     }
 
-    printf("    -> %s  (%.2f)\n", outputFileName, diff);
-
     savePNG(outputFileName, im1.width, im1.height, diffIm);
+
+    free(name);
 
     return 0;
 }

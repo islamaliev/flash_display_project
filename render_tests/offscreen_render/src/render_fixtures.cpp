@@ -3,7 +3,7 @@
 #include "render_fixtures.h"
 #include <FileLoader.h>
 #include <Texture.h>
-#include <Bitmap.h>
+#include <Image.h>
 
 using namespace offscreen;
 using namespace flash::display;
@@ -158,18 +158,18 @@ public:
     void setUp() override {
     }
 
-    Bitmap* prepareBitmap(const char* texturePath) {
+    Image* prepareImage(const char* texturePath) {
         flash::filesystem::FileLoader loader;
         loader.load(texturePath);
 
         if (loader.size()) {
             Texture* texture = (Texture*) loader.data();
-            Bitmap* bitmap = new Bitmap();
-            bitmap->setTexture(texture);
-            stage->addChild(bitmap);
-            m_bitmaps.push_back(bitmap);
+            Image* image = new Image();
+            image->setTexture(texture);
+            stage->addChild(image);
+            m_images.push_back(image);
             m_textures.push_back(texture);
-            return bitmap;
+            return image;
         }
         return nullptr;
     }
@@ -178,13 +178,13 @@ public:
         for (auto texture : m_textures) {
             texture->dispose();
         }
-        for (auto bitmap : m_bitmaps) {
-            delete bitmap;
+        for (auto image : m_images) {
+            delete image;
         }
     }
 
 protected:
-    std::vector<Bitmap*> m_bitmaps;
+    std::vector<Image*> m_images;
     std::vector<Texture*> m_textures;
 };
 
@@ -192,11 +192,11 @@ class FullscreenTexture : public TextureTest {
 public:
     void setUp() override {
         TextureTest::setUp();
-        Bitmap* bitmap = prepareBitmap("texture.jpg");
-        bitmap->setX(0);
-        bitmap->setY(0);
-        bitmap->setScaleX(W);
-        bitmap->setScaleY(H);
+        Image* image = prepareImage("texture.jpg");
+        image->setX(0);
+        image->setY(0);
+        image->setScaleX(W);
+        image->setScaleY(H);
     }
 };
 
@@ -204,11 +204,11 @@ class TextureAndDisplayObject : public TextureTest {
 public:
     void setUp() override {
         TextureTest::setUp();
-        Bitmap* bitmap = prepareBitmap("texture.jpg");
-        bitmap->setX(W * 0.1f);
-        bitmap->setY(H * 0.1f);
-        bitmap->setScaleX(W * 0.8f);
-        bitmap->setScaleY(H * 0.4f);
+        Image* image = prepareImage("texture.jpg");
+        image->setX(W * 0.1f);
+        image->setY(H * 0.1f);
+        image->setScaleX(W * 0.8f);
+        image->setScaleY(H * 0.4f);
 
         m_displayObject = new DisplayObject();
         m_displayObject->setX(W * 0.1f);
@@ -231,17 +231,17 @@ class TwoTextures : public TextureTest {
 public:
     void setUp() override {
         TextureTest::setUp();
-        Bitmap* bitmap = prepareBitmap("texture.jpg");
-        bitmap->setX(0);
-        bitmap->setY(H * 0.5f);
-        bitmap->setScaleX(W * 0.5f);
-        bitmap->setScaleY(H * 0.5f);
+        Image* image = prepareImage("texture.jpg");
+        image->setX(0);
+        image->setY(H * 0.5f);
+        image->setScaleX(W * 0.5f);
+        image->setScaleY(H * 0.5f);
 
-        Bitmap* bitmap2 = prepareBitmap("texture2.jpg");
-        bitmap2->setX(W * 0.5f);
-        bitmap2->setY(0);
-        bitmap2->setScaleX(W * 0.5f);
-        bitmap2->setScaleY(H * 0.5f);
+        Image* image2 = prepareImage("texture2.jpg");
+        image2->setX(W * 0.5f);
+        image2->setY(0);
+        image2->setScaleX(W * 0.5f);
+        image2->setScaleY(H * 0.5f);
     }
 };
 

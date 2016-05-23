@@ -142,3 +142,17 @@ TEST_F(DisplayObjectContainerTest, AddChildAtToAnotherContainer_childsParentUpda
     ASSERT_TRUE(cont.contains(&obj3));
     ASSERT_TRUE(cont2.contains(&obj1));
 }
+
+TEST_F(DisplayObjectContainerTest, SettingWidthOrHeightHasNoEffect) {
+    addChildren();
+    float oldWidth = cont.width();
+    cont.setWidth(100);
+    ASSERT_THAT(cont.width(), Eq(oldWidth));
+    cont.setWidth(200);
+    ASSERT_THAT(cont.width(), Eq(oldWidth));
+    float oldHeight = cont.height();
+    cont.setHeight(100);
+    ASSERT_THAT(cont.height(), Eq(oldHeight));
+    cont.setHeight(200);
+    ASSERT_THAT(cont.height(), Eq(oldHeight));
+}

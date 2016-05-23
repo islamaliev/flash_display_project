@@ -8,59 +8,50 @@
 using namespace offscreen;
 using namespace flash::display;
 
-class SizedChild : public Test {
+class DisplayObjectTest : public Test {
+public:
+    virtual void setUp() override {
+        m_obj = new DisplayObject();
+        stage->addChild(m_obj);
+    }
+
+    void tearDown() override {
+        delete m_obj;
+    }
+
+protected:
+    DisplayObject* m_obj;
+};
+
+class SizedChild : public DisplayObjectTest {
 public:
     void setUp() override {
-        m_obj = new DisplayObject();
+        DisplayObjectTest::setUp();
         m_obj->setWidth(W * 0.5f);
         m_obj->setHeight(H * 0.5f);
-        stage->addChild(m_obj);
     }
-
-    void tearDown() override {
-        delete m_obj;
-    }
-
-private:
-    DisplayObject* m_obj;
 };
 
-class ScaledChild : public Test {
+class ScaledChild : public DisplayObjectTest {
 public:
     void setUp() override {
-        m_obj = new DisplayObject();
+        DisplayObjectTest::setUp();
         m_obj->setScaleX(2);
         m_obj->setScaleY(2);
-        stage->addChild(m_obj);
     }
-
-    void tearDown() override {
-        delete m_obj;
-    }
-
-private:
-    DisplayObject* m_obj;
 };
 
-class SizedScaledMovedChild : public Test {
+class SizedScaledMovedChild : public DisplayObjectTest {
 public:
     void setUp() override {
-        m_obj = new DisplayObject();
+        DisplayObjectTest::setUp();
         m_obj->setScaleX(2);
         m_obj->setWidth(W * 0.4f);
         m_obj->setHeight(H * 0.4f);
         m_obj->setScaleY(2);
         m_obj->setX(W * 0.1f);
         m_obj->setY(H * 0.1f);
-        stage->addChild(m_obj);
     }
-
-    void tearDown() override {
-        delete m_obj;
-    }
-
-private:
-    DisplayObject* m_obj;
 };
 
 class TwoChildrenAtCorners : public Test {
@@ -283,6 +274,19 @@ public:
     }
 };
 
+class ObjectWithPivot : public DisplayObjectTest {
+public:
+    void setUp() override {
+        DisplayObjectTest::setUp();
+        m_obj->setWidth(W * 0.25f);
+        m_obj->setHeight(H * 0.25f);
+        m_obj->setX(W * 0.5f);
+        m_obj->setY(H * 0.5f);
+        m_obj->setPivotX(W * 0.25f);
+        m_obj->setPivotY(H * 0.25f);
+    }
+};
+
 void offscreen::initFixtures() {
     stage = new flash::display::Stage(W, H);
     RENDER(SizedChild);
@@ -296,6 +300,7 @@ void offscreen::initFixtures() {
     RENDER(FullscreenTexture);
     RENDER(TextureAndDisplayObject);
     RENDER(TwoTextures);
+    RENDER(ObjectWithPivot);
 }
 
 void offscreen::clearFixtures() {

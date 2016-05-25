@@ -178,6 +178,7 @@ int main(int argc, char** argv) {
         printf("    (%.2f)\n", diff);
     } else {
         printf("\n");
+        return 0;
     }
 
     strncpy(firstImageFolder, argv[1], nameBeg - argv[1]);

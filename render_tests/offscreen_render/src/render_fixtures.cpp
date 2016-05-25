@@ -287,6 +287,21 @@ public:
     }
 };
 
+class ScaledObjectWithPivot : public DisplayObjectTest {
+public:
+    void setUp() override {
+        DisplayObjectTest::setUp();
+        m_obj->setWidth(W * 0.1f);
+        m_obj->setHeight(H * 0.1f);
+        m_obj->setX(W * 0.5f);
+        m_obj->setY(H * 0.5f);
+        m_obj->setScaleX(5);
+        m_obj->setScaleY(5);
+        m_obj->setPivotX(W * 0.05f);
+        m_obj->setPivotY(H * 0.05f);
+    }
+};
+
 void offscreen::initFixtures() {
     stage = new flash::display::Stage(W, H);
     RENDER(SizedChild);
@@ -301,6 +316,7 @@ void offscreen::initFixtures() {
     RENDER(TextureAndDisplayObject);
     RENDER(TwoTextures);
     RENDER(ObjectWithPivot);
+    RENDER(ScaledObjectWithPivot);
 }
 
 void offscreen::clearFixtures() {

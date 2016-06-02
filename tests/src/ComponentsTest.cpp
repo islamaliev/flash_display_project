@@ -78,28 +78,56 @@ TEST_F(ComponentTest, RemoveIndexDoesNotAlterOthers) {
     auto& c4 = container->getComponent(i4);
 
     c2.width += 2;
-    c2.height += 2;
     auto c1Width = c1.width += 1;
-    auto c1Height = c1.height += 1;
     auto c3Width = c3.width += 3;
-    auto c3Height = c3.height += 3;
     auto c4Width = c4.width += 4;
-    auto c4Height = c4.height += 4;
 
     container->removeIndex(i2);
     const auto& iNew = container->createIndex();
     auto& cNew = container->getComponent(iNew);
     cNew.width += 5;
-    cNew.height += 5;
 
     c1 = container->getComponent(i1);
     c3 = container->getComponent(i3);
     c4 = container->getComponent(i4);
 
     ASSERT_THAT(c1Width, FloatEq(c1.width));
-    ASSERT_THAT(c1Height, FloatEq(c1.height));
     ASSERT_THAT(c3Width, FloatEq(c3.width));
-    ASSERT_THAT(c3Height, FloatEq(c3.height));
     ASSERT_THAT(c4Width, FloatEq(c4.width));
-    ASSERT_THAT(c4Height, FloatEq(c4.height));
 }
+
+TEST_F(ComponentTest, UtilizedEntityHasInitialDefaultValues) {
+    const auto& i1 = container->createIndex();
+    const auto& i2 = container->createIndex();
+    const auto& i3 = container->createIndex();
+    const auto& i4 = container->createIndex();
+
+    auto initialValue = container->getComponent(i1).width;
+
+    container->getComponent(i1).width += 1;
+    container->getComponent(i2).width += 2;
+    container->getComponent(i3).width += 3;
+    container->getComponent(i4).width += 4;
+
+    container->removeIndex(i2);
+    const auto& iNew = container->createIndex();
+    auto& cNew = container->getComponent(iNew);
+
+    ASSERT_THAT(cNew.width, FloatEq(initialValue));
+}
+
+TEST_F(ComponentTest, ForEach) {
+    using EntVec = std::vector<std::decay_t<decltype(container->createIndex())>>;
+    EntVec entities  = EntVec(SIZE);
+    for (int i = 0; i < SIZE; ++i) {
+        entities[i] = container->createIndex();
+    }
+    auto initValue = container->getComponent(entities[0]).width;
+    container->forEachComponent([](SpatialComponent& comp) {
+        comp.width += 5;
+    });
+    for (int i = 0; i < SIZE; ++i) {
+        ASSERT_THAT(container->getComponent(entities[0]).width, FloatEq(initValue + 5));
+    }
+}
+

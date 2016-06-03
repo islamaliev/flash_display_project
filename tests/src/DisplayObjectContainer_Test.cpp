@@ -1,8 +1,14 @@
+#include <Stage.h>
 #include "DisplayObjectContainer.h"
 #include "gmock/gmock-matchers.h"
 
 using namespace testing;
 using namespace flash::display;
+
+namespace {
+    const unsigned WIDTH = 40;
+    const unsigned HEIGHT = 20;
+}
 
 class DisplayObjectContainer_Test : public Test {
 public:
@@ -16,6 +22,14 @@ public:
     DisplayObject obj2;
     DisplayObject obj3;
     DisplayObjectContainer cont;
+};
+
+class DisplayObject_DepthTest : public DisplayObjectContainer_Test {
+public:
+    DisplayObject_DepthTest()
+            : stage(WIDTH, HEIGHT) {}
+
+    Stage stage;
 };
 
 TEST_F(DisplayObjectContainer_Test, DefaultConstructor) {
@@ -155,4 +169,12 @@ TEST_F(DisplayObjectContainer_Test, SettingWidthOrHeightHasNoEffect) {
     ASSERT_THAT(cont.height(), Eq(oldHeight));
     cont.setHeight(200);
     ASSERT_THAT(cont.height(), Eq(oldHeight));
+}
+
+TEST_F(DisplayObject_DepthTest, Negative_ifNotOnStage) {
+    ASSERT_THAT(obj1.depth(), Eq(-1));
+}
+
+TEST_F(DisplayObject_DepthTest, ZeroForStage) {
+    ASSERT_THAT(stage.depth(), Eq(0));
 }

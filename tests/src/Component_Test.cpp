@@ -27,22 +27,22 @@ protected:
     }
 };
 
-TEST_F(Component_Test, Fails_whenRequestedMoreThenSize) {
+TEST_F(Component_Test, CreateEntityFails_whenRequestedMoreThenSize) {
     for (int i = 0; i < SIZE; ++i) {
-        container->createIndex();
+        container->createEntity();
     }
-    ASSERT_DEATH(container->createIndex(), "");
+    ASSERT_DEATH(container->createEntity(), "");
 }
 
-TEST_F(Component_Test, CreateIndexIsDifferent) {
-    const auto& i1 = container->createIndex();
-    const auto& i2 = container->createIndex();
+TEST_F(Component_Test, EachCreateEntityGivesDifferentResult) {
+    const auto& i1 = container->createEntity();
+    const auto& i2 = container->createEntity();
     ASSERT_THAT(i1, Not(i2));
 }
 
-TEST_F(Component_Test, AddComponentReturnsSameObj_ifSameIndexGiven) {
-    const auto& i1 = container->createIndex();
-    const auto& i2 = container->createIndex();
+TEST_F(Component_Test, AddComponentReturnsSameObj_ifSameEntityGiven) {
+    const auto& i1 = container->createEntity();
+    const auto& i2 = container->createEntity();
     auto& c1 = container->getSpatialComponent(i1);
     auto& c2 = container->getSpatialComponent(i2);
     c1.width += 1;
@@ -55,23 +55,23 @@ TEST_F(Component_Test, AddComponentReturnsSameObj_ifSameIndexGiven) {
     ASSERT_THAT(container->getSpatialComponent(i1).height, Not(container->getSpatialComponent(i2).height));
 }
 
-TEST_F(Component_Test, NewIndexDdesNotFail_ifOldOnesAreRemoved) {
-    const auto& i1 = container->createIndex();
-    const auto& i2 = container->createIndex();
+TEST_F(Component_Test, NewEntityDoesNotFail_ifOldOnesAreRemoved) {
+    const auto& i1 = container->createEntity();
+    const auto& i2 = container->createEntity();
     for (int i = 2; i < SIZE; ++i) {
-        container->createIndex();
+        container->createEntity();
     }
-    container->removeIndex(i1);
-    container->removeIndex(i2);
-    container->createIndex();
-    container->createIndex();
+    container->removeEntity(i1);
+    container->removeEntity(i2);
+    container->createEntity();
+    container->createEntity();
 }
 
-TEST_F(Component_Test, RemoveIndexDoesNotAlterOthers) {
-    const auto& i1 = container->createIndex();
-    const auto& i2 = container->createIndex();
-    const auto& i3 = container->createIndex();
-    const auto& i4 = container->createIndex();
+TEST_F(Component_Test, RemoveEntityDoesNotAlterOthers) {
+    const auto& i1 = container->createEntity();
+    const auto& i2 = container->createEntity();
+    const auto& i3 = container->createEntity();
+    const auto& i4 = container->createEntity();
     auto& c1 = container->getSpatialComponent(i1);
     auto& c2 = container->getSpatialComponent(i2);
     auto& c3 = container->getSpatialComponent(i3);
@@ -82,8 +82,8 @@ TEST_F(Component_Test, RemoveIndexDoesNotAlterOthers) {
     auto c3Width = c3.width += 3;
     auto c4Width = c4.width += 4;
 
-    container->removeIndex(i2);
-    const auto& iNew = container->createIndex();
+    container->removeEntity(i2);
+    const auto& iNew = container->createEntity();
     auto& cNew = container->getSpatialComponent(iNew);
     cNew.width += 5;
 
@@ -97,10 +97,10 @@ TEST_F(Component_Test, RemoveIndexDoesNotAlterOthers) {
 }
 
 TEST_F(Component_Test, UtilizedEntityHasInitialDefaultValues) {
-    const auto& i1 = container->createIndex();
-    const auto& i2 = container->createIndex();
-    const auto& i3 = container->createIndex();
-    const auto& i4 = container->createIndex();
+    const auto& i1 = container->createEntity();
+    const auto& i2 = container->createEntity();
+    const auto& i3 = container->createEntity();
+    const auto& i4 = container->createEntity();
 
     auto initialValue = container->getSpatialComponent(i1).width;
 
@@ -109,18 +109,18 @@ TEST_F(Component_Test, UtilizedEntityHasInitialDefaultValues) {
     container->getSpatialComponent(i3).width += 3;
     container->getSpatialComponent(i4).width += 4;
 
-    container->removeIndex(i2);
-    const auto& iNew = container->createIndex();
+    container->removeEntity(i2);
+    const auto& iNew = container->createEntity();
     auto& cNew = container->getSpatialComponent(iNew);
 
     ASSERT_THAT(cNew.width, FloatEq(initialValue));
 }
 
 TEST_F(Component_Test, ForEach) {
-    using EntVec = std::vector<std::decay_t<decltype(container->createIndex())>>;
+    using EntVec = std::vector<std::decay_t<decltype(container->createEntity())>>;
     EntVec entities  = EntVec(SIZE);
     for (int i = 0; i < SIZE; ++i) {
-        entities[i] = container->createIndex();
+        entities[i] = container->createEntity();
     }
     auto initValue = container->getSpatialComponent(entities[0]).width;
     container->forEachComponent([](SpatialComponent& comp) {

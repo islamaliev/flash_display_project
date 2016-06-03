@@ -5,7 +5,7 @@
 using namespace testing;
 using namespace flash::core;
 
-class RectangleTest : public Test {
+class Rectangle_Test : public Test {
 public:
     void SetUp() override {
 
@@ -14,7 +14,7 @@ public:
     Rectangle rect;
 };
 
-TEST_F(RectangleTest, Constructor) {
+TEST_F(Rectangle_Test, Constructor) {
     Rectangle r = {1, 2, 3, 4};
     ASSERT_EQ(r.x, 1);
     ASSERT_EQ(r.y, 2);
@@ -22,7 +22,7 @@ TEST_F(RectangleTest, Constructor) {
     ASSERT_EQ(r.height, 4);
 }
 
-TEST_F(RectangleTest, DefaultConstructor) {
+TEST_F(Rectangle_Test, DefaultConstructor) {
     Rectangle r;
     ASSERT_EQ(r.x, 0);
     ASSERT_EQ(r.y, 0);
@@ -30,7 +30,7 @@ TEST_F(RectangleTest, DefaultConstructor) {
     ASSERT_EQ(r.height, 1);
 }
 
-TEST_F(RectangleTest, Equals) {
+TEST_F(Rectangle_Test, Equals) {
     rect = {2, 2, 4, 4};
     Rectangle otherRect = rect;
     ASSERT_TRUE(rect.equals(otherRect));

@@ -10,15 +10,15 @@ namespace {
     const unsigned HEIGHT = 20;
 }
 
-class StageTest : public Test {
+class Stage_Test : public Test {
 public:
-    StageTest()
+    Stage_Test()
         : stage(WIDTH, HEIGHT) {}
 
     Stage stage;
 };
 
-TEST_F(StageTest, Constructor) {
+TEST_F(Stage_Test, Constructor) {
     ASSERT_EQ(stage.width(), WIDTH);
     ASSERT_EQ(stage.height(), HEIGHT);
 }

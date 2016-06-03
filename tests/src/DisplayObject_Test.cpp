@@ -22,7 +22,7 @@ std::string toString(const Rectangle& rect) {
     return std::string(buf);
 }
 
-class DisplayObjectTest : public testing::Test {
+class DisplayObject_Test : public testing::Test {
 public:
 
     Mat4 getTransform(float x, float y, float scaleX, float scaleY) {
@@ -50,10 +50,10 @@ public:
     DisplayObject displayObject;
 };
 
-class DisplayObjectGetTransformTest : public DisplayObjectTest {
+class DisplayObject_GetTransformTest : public DisplayObject_Test {
 };
 
-class DisplayObjectGetRelativeTransformTest : public DisplayObjectGetTransformTest {
+class DisplayObject_GetRelativeTransformTest : public DisplayObject_GetTransformTest {
 public:
 
     void makeHierarchy() {
@@ -65,70 +65,70 @@ public:
     DisplayObjectContainer grandparent;
 };
 
-TEST_F(DisplayObjectTest, SetWidth) {
+TEST_F(DisplayObject_Test, SetWidth) {
     displayObject.setWidth(100);
     ASSERT_THAT(displayObject.width(), Eq(100));
     displayObject.setWidth(200);
     ASSERT_THAT(displayObject.width(), Eq(200));
 }
 
-TEST_F(DisplayObjectTest, SetHeight) {
+TEST_F(DisplayObject_Test, SetHeight) {
     displayObject.setHeight(100);
     ASSERT_THAT(displayObject.height(), Eq(100));
     displayObject.setHeight(200);
     ASSERT_THAT(displayObject.height(), Eq(200));
 }
 
-TEST_F(DisplayObjectTest, SetX) {
+TEST_F(DisplayObject_Test, SetX) {
     displayObject.setX(3);
     ASSERT_THAT(displayObject.x(), Eq(3));
     displayObject.setX(7);
     ASSERT_THAT(displayObject.x(), Eq(7));
 }
 
-TEST_F(DisplayObjectTest, SetY) {
+TEST_F(DisplayObject_Test, SetY) {
     displayObject.setY(5);
     ASSERT_THAT(displayObject.y(), Eq(5));
     displayObject.setY(9);
     ASSERT_THAT(displayObject.y(), Eq(9));
 }
 
-TEST_F(DisplayObjectTest, SetPivotX) {
+TEST_F(DisplayObject_Test, SetPivotX) {
     displayObject.setPivotX(3);
     ASSERT_THAT(displayObject.pivotX(), Eq(3));
     displayObject.setPivotX(7);
     ASSERT_THAT(displayObject.pivotX(), Eq(7));
 }
 
-TEST_F(DisplayObjectTest, SetPivotY) {
+TEST_F(DisplayObject_Test, SetPivotY) {
     displayObject.setPivotY(5);
     ASSERT_THAT(displayObject.pivotY(), Eq(5));
     displayObject.setPivotY(9);
     ASSERT_THAT(displayObject.pivotY(), Eq(9));
 }
 
-TEST_F(DisplayObjectTest, SetRotation) {
+TEST_F(DisplayObject_Test, SetRotation) {
     displayObject.setRotation(1);
     ASSERT_THAT(displayObject.rotation(), Eq(1));
     displayObject.setRotation(2);
     ASSERT_THAT(displayObject.rotation(), Eq(2));
 }
 
-TEST_F(DisplayObjectTest, SetScaleX) {
+TEST_F(DisplayObject_Test, SetScaleX) {
     displayObject.setScaleX(3);
     ASSERT_THAT(displayObject.scaleX(), Eq(3));
     displayObject.setScaleX(7);
     ASSERT_THAT(displayObject.scaleX(), Eq(7));
 }
 
-TEST_F(DisplayObjectTest, SetScaleY) {
+TEST_F(DisplayObject_Test, SetScaleY) {
     displayObject.setScaleY(5);
     ASSERT_THAT(displayObject.scaleY(), Eq(5));
     displayObject.setScaleY(9);
     ASSERT_THAT(displayObject.scaleY(), Eq(9));
 }
 
-TEST_F(DisplayObjectTest, DefaultConstructor) {
+TEST_F(DisplayObject_Test, DefaultConstructor) {
     DisplayObject obj;
     ASSERT_THAT(obj.x(), Eq(0));
     ASSERT_THAT(obj.y(), Eq(0));
@@ -142,18 +142,18 @@ TEST_F(DisplayObjectTest, DefaultConstructor) {
     ASSERT_THAT(obj.visible(), Eq(true));
 }
 
-TEST_F(DisplayObjectTest, SetVisible) {
+TEST_F(DisplayObject_Test, SetVisible) {
     displayObject.setVisible(false);
     ASSERT_THAT(displayObject.visible(), Eq(false));
     displayObject.setVisible(true);
     ASSERT_THAT(displayObject.visible(), Eq(true));
 }
 
-TEST_F(DisplayObjectTest, NewObjectHasNoParent) {
+TEST_F(DisplayObject_Test, NewObjectHasNoParent) {
     ASSERT_FALSE(displayObject.getParent() != nullptr);
 }
 
-TEST_F(DisplayObjectTest, GetBoundsInOwnSpace) {
+TEST_F(DisplayObject_Test, GetBoundsInOwnSpace) {
     displayObject.setX(10);
     displayObject.setY(10);
     displayObject.setWidth(33);
@@ -162,7 +162,7 @@ TEST_F(DisplayObjectTest, GetBoundsInOwnSpace) {
     ASSERT_TRUE(RectanglesEQ(r, {0, 0, 33, 35}));
 }
 
-TEST_F(DisplayObjectGetTransformTest, ForPositionAndScale) {
+TEST_F(DisplayObject_GetTransformTest, ForPositionAndScale) {
     int x = 10;
     int y = 20;
     int w = 40;
@@ -175,14 +175,14 @@ TEST_F(DisplayObjectGetTransformTest, ForPositionAndScale) {
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), getTransform(x, y, w, h)));
 }
 
-TEST_F(DisplayObjectGetRelativeTransformTest, ReturnsIdentity_ifNoParent) {
+TEST_F(DisplayObject_GetRelativeTransformTest, ReturnsIdentity_ifNoParent) {
     DisplayObjectContainer notParent;
     displayObject.setWidth(2);
     displayObject.setY(10);
     ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&notParent), Mat4::IDENTITY));
 }
 
-TEST_F(DisplayObjectGetRelativeTransformTest, ReturnsInParentsSpace_ifParentGiven) {
+TEST_F(DisplayObject_GetRelativeTransformTest, ReturnsInParentsSpace_ifParentGiven) {
     makeHierarchy();
     int x = 10;
     int y = 20;
@@ -196,7 +196,7 @@ TEST_F(DisplayObjectGetRelativeTransformTest, ReturnsInParentsSpace_ifParentGive
 }
 
 // TODO: enable test
-TEST_F(DisplayObjectGetRelativeTransformTest, DISABLED_ReturnsInGrandParentsSpace_ifGrandParentGiven) {
+TEST_F(DisplayObject_GetRelativeTransformTest, DISABLED_ReturnsInGrandParentsSpace_ifGrandParentGiven) {
     makeHierarchy();
     int x = 10;
     int y = 20;

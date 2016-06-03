@@ -7,7 +7,7 @@
 using namespace testing;
 using namespace flash::display;
 
-class ImageTest : public testing::Test {
+class Image_Test : public testing::Test {
 public:
     static constexpr unsigned W = 60;
     static constexpr unsigned H = 40;
@@ -21,27 +21,27 @@ protected:
     Texture texture{W, H};
 };
 
-TEST_F(ImageTest, ImageHasSizeOfTexture) {
+TEST_F(Image_Test, ImageHasSizeOfTexture) {
     ASSERT_THAT(image.width(), Eq(W));
     ASSERT_THAT(image.height(), Eq(H));
 }
 
-TEST_F(ImageTest, ifWidthIsSet_scaleXIsAltered) {
+TEST_F(Image_Test, ifWidthIsSet_scaleXIsAltered) {
     image.setWidth(image.width() * 2);
     ASSERT_THAT(image.scaleX(), Eq(2));
 }
 
-TEST_F(ImageTest, ifHeightIsSet_scaleYIsAltered) {
+TEST_F(Image_Test, ifHeightIsSet_scaleYIsAltered) {
     image.setHeight(image.height() * 2);
     ASSERT_THAT(image.scaleY(), Eq(2));
 }
 
-TEST_F(ImageTest, ifScaleXIsSet_widthIsAltered) {
+TEST_F(Image_Test, ifScaleXIsSet_widthIsAltered) {
     image.setScaleX(2);
     ASSERT_THAT(image.width(), Eq(W * 2));
 }
 
-TEST_F(ImageTest, ifScaleYIsSet_heightIsAltered) {
+TEST_F(Image_Test, ifScaleYIsSet_heightIsAltered) {
     image.setScaleY(2);
     ASSERT_THAT(image.height(), Eq(H * 2));
 }

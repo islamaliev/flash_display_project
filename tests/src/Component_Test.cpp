@@ -9,7 +9,7 @@ using Container = SpatialComponentContainer;
 namespace {
 }
 
-class ComponentTest : public Test {
+class Component_Test : public Test {
 public:
     static const unsigned SIZE = 4;
 
@@ -27,20 +27,20 @@ protected:
     }
 };
 
-TEST_F(ComponentTest, Fails_whenRequestedMoreThenSize) {
+TEST_F(Component_Test, Fails_whenRequestedMoreThenSize) {
     for (int i = 0; i < SIZE; ++i) {
         container->createIndex();
     }
     ASSERT_DEATH(container->createIndex(), "");
 }
 
-TEST_F(ComponentTest, CreateIndexIsDifferent) {
+TEST_F(Component_Test, CreateIndexIsDifferent) {
     const auto& i1 = container->createIndex();
     const auto& i2 = container->createIndex();
     ASSERT_THAT(i1, Not(i2));
 }
 
-TEST_F(ComponentTest, AddComponentReturnsSameObj_ifSameIndexGiven) {
+TEST_F(Component_Test, AddComponentReturnsSameObj_ifSameIndexGiven) {
     const auto& i1 = container->createIndex();
     const auto& i2 = container->createIndex();
     auto& c1 = container->getSpatialComponent(i1);
@@ -55,7 +55,7 @@ TEST_F(ComponentTest, AddComponentReturnsSameObj_ifSameIndexGiven) {
     ASSERT_THAT(container->getSpatialComponent(i1).height, Not(container->getSpatialComponent(i2).height));
 }
 
-TEST_F(ComponentTest, NewIndexDdesNotFail_ifOldOnesAreRemoved) {
+TEST_F(Component_Test, NewIndexDdesNotFail_ifOldOnesAreRemoved) {
     const auto& i1 = container->createIndex();
     const auto& i2 = container->createIndex();
     for (int i = 2; i < SIZE; ++i) {
@@ -67,7 +67,7 @@ TEST_F(ComponentTest, NewIndexDdesNotFail_ifOldOnesAreRemoved) {
     container->createIndex();
 }
 
-TEST_F(ComponentTest, RemoveIndexDoesNotAlterOthers) {
+TEST_F(Component_Test, RemoveIndexDoesNotAlterOthers) {
     const auto& i1 = container->createIndex();
     const auto& i2 = container->createIndex();
     const auto& i3 = container->createIndex();
@@ -96,7 +96,7 @@ TEST_F(ComponentTest, RemoveIndexDoesNotAlterOthers) {
     ASSERT_THAT(c4Width, FloatEq(c4.width));
 }
 
-TEST_F(ComponentTest, UtilizedEntityHasInitialDefaultValues) {
+TEST_F(Component_Test, UtilizedEntityHasInitialDefaultValues) {
     const auto& i1 = container->createIndex();
     const auto& i2 = container->createIndex();
     const auto& i3 = container->createIndex();
@@ -116,7 +116,7 @@ TEST_F(ComponentTest, UtilizedEntityHasInitialDefaultValues) {
     ASSERT_THAT(cNew.width, FloatEq(initialValue));
 }
 
-TEST_F(ComponentTest, ForEach) {
+TEST_F(Component_Test, ForEach) {
     using EntVec = std::vector<std::decay_t<decltype(container->createIndex())>>;
     EntVec entities  = EntVec(SIZE);
     for (int i = 0; i < SIZE; ++i) {

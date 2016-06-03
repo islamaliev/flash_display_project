@@ -4,7 +4,7 @@
 using namespace testing;
 using namespace flash::display;
 
-class DisplayObjectContainerTest : public Test {
+class DisplayObjectContainer_Test : public Test {
 public:
     void addChildren() {
         cont.addChild(&obj1);
@@ -18,22 +18,22 @@ public:
     DisplayObjectContainer cont;
 };
 
-TEST_F(DisplayObjectContainerTest, DefaultConstructor) {
+TEST_F(DisplayObjectContainer_Test, DefaultConstructor) {
     DisplayObjectContainer doCont;
 }
 
-TEST_F(DisplayObjectContainerTest, NewContainerIsEmpty) {
+TEST_F(DisplayObjectContainer_Test, NewContainerIsEmpty) {
     ASSERT_EQ(cont.numChildren(), 0);
 }
 
-TEST_F(DisplayObjectContainerTest, OnAddChildSizeIncrease) {
+TEST_F(DisplayObjectContainer_Test, OnAddChildSizeIncrease) {
     cont.addChild(&obj1);
     ASSERT_EQ(cont.numChildren(), 1);
     cont.addChild(&obj2);
     ASSERT_EQ(cont.numChildren(), 2);
 }
 
-TEST_F(DisplayObjectContainerTest, OnRemoveChildSizeDecreased) {
+TEST_F(DisplayObjectContainer_Test, OnRemoveChildSizeDecreased) {
     addChildren();
     ASSERT_EQ(cont.numChildren(), 3);
     cont.removeChild(&obj3);
@@ -44,14 +44,14 @@ TEST_F(DisplayObjectContainerTest, OnRemoveChildSizeDecreased) {
     ASSERT_EQ(cont.numChildren(), 0);
 }
 
-TEST_F(DisplayObjectContainerTest, GetChildAt) {
+TEST_F(DisplayObjectContainer_Test, GetChildAt) {
     addChildren();
     ASSERT_EQ(cont.getChildAt(0), &obj1);
     ASSERT_EQ(cont.getChildAt(1), &obj2);
     ASSERT_EQ(cont.getChildAt(2), &obj3);
 }
 
-TEST_F(DisplayObjectContainerTest, AddChildAt) {
+TEST_F(DisplayObjectContainer_Test, AddChildAt) {
     cont.addChild(&obj3);
     cont.addChildAt(&obj1, 0);
     cont.addChildAt(&obj2, 1);
@@ -60,27 +60,27 @@ TEST_F(DisplayObjectContainerTest, AddChildAt) {
     ASSERT_EQ(cont.getChildAt(2), &obj3);
 }
 
-TEST_F(DisplayObjectContainerTest, RemoveChildAt) {
+TEST_F(DisplayObjectContainer_Test, RemoveChildAt) {
     addChildren();
     ASSERT_EQ(cont.removeChildAt(2), &obj3);
     ASSERT_EQ(cont.removeChildAt(0), &obj1);
 }
 
-TEST_F(DisplayObjectContainerTest, RemoveChildren) {
+TEST_F(DisplayObjectContainer_Test, RemoveChildren) {
     addChildren();
     ASSERT_EQ(cont.numChildren(), 3);
     cont.removeChildren();
     ASSERT_EQ(cont.numChildren(), 0);
 }
 
-TEST_F(DisplayObjectContainerTest, GetChildIndex) {
+TEST_F(DisplayObjectContainer_Test, GetChildIndex) {
     addChildren();
     ASSERT_EQ(cont.getChildIndex(&obj1), 0);
     ASSERT_EQ(cont.getChildIndex(&obj2), 1);
     ASSERT_EQ(cont.getChildIndex(&obj3), 2);
 }
 
-TEST_F(DisplayObjectContainerTest, Contains) {
+TEST_F(DisplayObjectContainer_Test, Contains) {
     addChildren();
     DisplayObject outerObject;
     ASSERT_TRUE(cont.contains(&obj1));
@@ -89,29 +89,29 @@ TEST_F(DisplayObjectContainerTest, Contains) {
     ASSERT_FALSE(cont.contains(&outerObject));
 }
 
-TEST_F(DisplayObjectContainerTest, AddChildSetsChildsParent) {
+TEST_F(DisplayObjectContainer_Test, AddChildSetsChildsParent) {
     cont.addChild(&obj1);
     ASSERT_EQ(obj1.getParent(), &cont);
 }
 
-TEST_F(DisplayObjectContainerTest, AddChildAtSetsChildsParent) {
+TEST_F(DisplayObjectContainer_Test, AddChildAtSetsChildsParent) {
     cont.addChildAt(&obj1, 0);
     ASSERT_EQ(obj1.getParent(), &cont);
 }
 
-TEST_F(DisplayObjectContainerTest, RemoveChildNullsChildsParent) {
+TEST_F(DisplayObjectContainer_Test, RemoveChildNullsChildsParent) {
     cont.addChild(&obj1);
     cont.removeChild(&obj1);
     ASSERT_TRUE(obj1.getParent() == nullptr);
 }
 
-TEST_F(DisplayObjectContainerTest, RemoveChildAtNullsChildsParent) {
+TEST_F(DisplayObjectContainer_Test, RemoveChildAtNullsChildsParent) {
     cont.addChild(&obj1);
     cont.removeChildAt(0);
     ASSERT_TRUE(obj1.getParent() == nullptr);
 }
 
-TEST_F(DisplayObjectContainerTest, RemoveChildrenNullsAllChildrensParents) {
+TEST_F(DisplayObjectContainer_Test, RemoveChildrenNullsAllChildrensParents) {
     addChildren();
     cont.removeChildren();
     ASSERT_TRUE(obj1.getParent() == nullptr);
@@ -119,7 +119,7 @@ TEST_F(DisplayObjectContainerTest, RemoveChildrenNullsAllChildrensParents) {
     ASSERT_TRUE(obj3.getParent() == nullptr);
 }
 
-TEST_F(DisplayObjectContainerTest, AddChildToAnotherContainer_childsParentUpdated) {
+TEST_F(DisplayObjectContainer_Test, AddChildToAnotherContainer_childsParentUpdated) {
     addChildren();
     DisplayObjectContainer cont2;
     cont2.addChild(&obj1);
@@ -131,7 +131,7 @@ TEST_F(DisplayObjectContainerTest, AddChildToAnotherContainer_childsParentUpdate
     ASSERT_TRUE(cont2.contains(&obj1));
 }
 
-TEST_F(DisplayObjectContainerTest, AddChildAtToAnotherContainer_childsParentUpdated) {
+TEST_F(DisplayObjectContainer_Test, AddChildAtToAnotherContainer_childsParentUpdated) {
     addChildren();
     DisplayObjectContainer cont2;
     cont2.addChildAt(&obj1, 0);
@@ -143,7 +143,7 @@ TEST_F(DisplayObjectContainerTest, AddChildAtToAnotherContainer_childsParentUpda
     ASSERT_TRUE(cont2.contains(&obj1));
 }
 
-TEST_F(DisplayObjectContainerTest, SettingWidthOrHeightHasNoEffect) {
+TEST_F(DisplayObjectContainer_Test, SettingWidthOrHeightHasNoEffect) {
     addChildren();
     float oldWidth = cont.width();
     cont.setWidth(100);

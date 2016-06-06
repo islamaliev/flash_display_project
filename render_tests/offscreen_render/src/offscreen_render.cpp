@@ -13,8 +13,8 @@ int testIndex = 0;
 
 const char* nextOffscreen() {
     if (currentTest) {
-        currentTest->tearDown();
         offscreen::stage->removeChildren();
+        currentTest->tearDown();
     }
 
     if (testIndex < offscreen::tests.size()) {

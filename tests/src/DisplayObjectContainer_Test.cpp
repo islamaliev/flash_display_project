@@ -125,25 +125,41 @@ TEST_F(DisplayObjectContainer_Test, RemoveChildrenNullsAllChildrensParents) {
 TEST_F(DisplayObjectContainer_Test, AddChildToAnotherContainer_childsParentUpdated) {
     addChildren();
     DisplayObjectContainer cont2;
+
+    ASSERT_THAT(cont1.numChildren(), Eq(3));
+    ASSERT_THAT(cont2.numChildren(), Eq(0));
+
     cont2.addChild(&obj1);
-    ASSERT_EQ(obj1.getParent(), &cont2);
-    ASSERT_EQ(obj2.getParent(), &cont1);
-    ASSERT_EQ(obj3.getParent(), &cont1);
+
+    ASSERT_THAT(obj1.getParent(), Eq(&cont2));
+    ASSERT_THAT(obj2.getParent(), Eq(&cont1));
+    ASSERT_THAT(obj3.getParent(), Eq(&cont1));
+    ASSERT_THAT(cont1.numChildren(), Eq(2));
+    ASSERT_THAT(cont2.numChildren(), Eq(1));
     ASSERT_TRUE(cont1.contains(&obj2));
     ASSERT_TRUE(cont1.contains(&obj3));
     ASSERT_TRUE(cont2.contains(&obj1));
+    ASSERT_FALSE(cont1.contains(&obj1));
 }
 
 TEST_F(DisplayObjectContainer_Test, AddChildAtToAnotherContainer_childsParentUpdated) {
     addChildren();
     DisplayObjectContainer cont2;
+
+    ASSERT_THAT(cont1.numChildren(), Eq(3));
+    ASSERT_THAT(cont2.numChildren(), Eq(0));
+
     cont2.addChildAt(&obj1, 0);
-    ASSERT_EQ(obj1.getParent(), &cont2);
-    ASSERT_EQ(obj2.getParent(), &cont1);
-    ASSERT_EQ(obj3.getParent(), &cont1);
+
+    ASSERT_THAT(obj1.getParent(), Eq(&cont2));
+    ASSERT_THAT(obj2.getParent(), Eq(&cont1));
+    ASSERT_THAT(obj3.getParent(), Eq(&cont1));
+    ASSERT_THAT(cont1.numChildren(), Eq(2));
+    ASSERT_THAT(cont2.numChildren(), Eq(1));
     ASSERT_TRUE(cont1.contains(&obj2));
     ASSERT_TRUE(cont1.contains(&obj3));
     ASSERT_TRUE(cont2.contains(&obj1));
+    ASSERT_FALSE(cont1.contains(&obj1));
 }
 
 TEST_F(DisplayObjectContainer_Test, SettingWidthOrHeightHasNoEffect) {
@@ -158,4 +174,56 @@ TEST_F(DisplayObjectContainer_Test, SettingWidthOrHeightHasNoEffect) {
     ASSERT_THAT(cont1.height(), Eq(oldHeight));
     cont1.setHeight(200);
     ASSERT_THAT(cont1.height(), Eq(oldHeight));
+}
+
+TEST_F(DisplayObjectContainer_Test, AddingSameChild_whenOnlyOne) {
+    cont1.addChild(&obj1);
+
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj1));
+
+    cont1.addChild(&obj1);
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj1));
+}
+
+TEST_F(DisplayObjectContainer_Test, AddingSameChild_whenAmongOthers) {
+    addChildren();
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj1));
+    ASSERT_THAT(cont1.getChildAt(1), Eq(&obj2));
+    ASSERT_THAT(cont1.getChildAt(2), Eq(&obj3));
+
+    cont1.addChild(&obj1);
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj2));
+    ASSERT_THAT(cont1.getChildAt(1), Eq(&obj3));
+    ASSERT_THAT(cont1.getChildAt(2), Eq(&obj1));
+
+    cont1.addChild(&obj3);
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj2));
+    ASSERT_THAT(cont1.getChildAt(1), Eq(&obj1));
+    ASSERT_THAT(cont1.getChildAt(2), Eq(&obj3));
+}
+
+TEST_F(DisplayObjectContainer_Test, AddingSameChildAtSpecificIndex_whenOnlyOne) {
+    cont1.addChild(&obj1);
+
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj1));
+
+    cont1.addChildAt(&obj1, 0);
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj1));
+}
+
+TEST_F(DisplayObjectContainer_Test, AddingSameChildAtSpecificIndex_whenAmongOthers) {
+    addChildren();
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj1));
+    ASSERT_THAT(cont1.getChildAt(1), Eq(&obj2));
+    ASSERT_THAT(cont1.getChildAt(2), Eq(&obj3));
+
+    cont1.addChildAt(&obj2, 0);
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj2));
+    ASSERT_THAT(cont1.getChildAt(1), Eq(&obj1));
+    ASSERT_THAT(cont1.getChildAt(2), Eq(&obj3));
+
+    cont1.addChildAt(&obj3, 0);
+    ASSERT_THAT(cont1.getChildAt(0), Eq(&obj3));
+    ASSERT_THAT(cont1.getChildAt(1), Eq(&obj2));
+    ASSERT_THAT(cont1.getChildAt(2), Eq(&obj1));
 }

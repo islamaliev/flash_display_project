@@ -1,13 +1,10 @@
 #include "gmock/gmock-matchers.h"
-#include "SpatialComponent.h"
+#include "ComponentContainer.h"
 
 using namespace testing;
 using namespace flash;
 
-using Container = SpatialComponentContainer;
-
-namespace {
-}
+using Container = ComponentContainer;
 
 class Component_Test : public Test {
 public:

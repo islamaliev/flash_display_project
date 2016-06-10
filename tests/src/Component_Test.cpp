@@ -27,7 +27,7 @@ protected:
     }
 };
 
-TEST_F(Component_Test, CreateEntityFails_whenRequestedMoreThenSize) {
+TEST_F(Component_Test, CreateEntityFails_whenRequestedMoreThanSize) {
     for (int i = 0; i < SIZE; ++i) {
         container->createEntity();
     }

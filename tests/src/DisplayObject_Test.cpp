@@ -139,6 +139,9 @@ TEST_F(DisplayObject_Test, DefaultConstructor) {
     ASSERT_THAT(obj.pivotX(), Eq(0));
     ASSERT_THAT(obj.pivotY(), Eq(0));
     ASSERT_THAT(obj.rotation(), Eq(0));
+    ASSERT_THAT(obj.depth(), Eq(-1));
+    ASSERT_THAT(obj.orderIndex(), Eq(-1));
+    ASSERT_THAT(obj.treeSize(), Eq(1));
     ASSERT_THAT(obj.visible(), Eq(true));
 }
 

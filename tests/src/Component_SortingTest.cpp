@@ -52,6 +52,18 @@ public:
         ASSERT_THAT(actualDepthOrder, Eq(expectedOrder));
     }
 
+    void sort(const std::vector<int>& order) {
+        for (int i = 0; i < order.size(); ++i) {
+            container->getOrderComponent(*m_entities[i]) = order[i];
+        }
+        container->sort();
+    }
+
+    void sortAndAssert(const std::vector<int>& order) {
+        sort(order);
+        assertSort(order);
+    }
+
     const Entity& createEntity() {
         const auto& entity = container->createEntity();
         m_entities.push_back(&entity);
@@ -94,39 +106,24 @@ TEST_F(Component_SortingTest, OneEntityNotAltered) {
 }
 
 TEST_F(Component_SortingTest, SwappingTwoElements) {
-    auto& e1 = createEntity();
-    auto& e2 = createEntity();
+    createEntity();
+    createEntity();
 
-    container->getOrderComponent(e1) = 0;
-    container->getOrderComponent(e2) = 1;
-    container->sort();
-
-    assertSort({0, 1});
-
-    container->getOrderComponent(e1) = 1;
-    container->getOrderComponent(e2) = 0;
-    container->sort();
-
-    assertSort({1, 0});
+    sortAndAssert({0, 1});
+    sortAndAssert({1, 0});
 }
 
 TEST_F(Component_SortingTest, ComponentsArePreserved_whenTwoElementsSwapped) {
     auto& e1 = createEntity();
     auto& e2 = createEntity();
 
-    container->getOrderComponent(e1) = 0;
-    container->getOrderComponent(e2) = 1;
-
     container->getSpatialComponent(e1).width = 7;
     container->getSpatialComponent(e2).width = 11;
     container->getDepthComponent(e1) = 7;
     container->getDepthComponent(e2) = 11;
 
-    container->sort();
-
-    container->getOrderComponent(e1) = 1;
-    container->getOrderComponent(e2) = 0;
-    container->sort();
+    sort({0, 1});
+    sort({1, 0});
 
     ASSERT_THAT(container->getSpatialComponent(e1).width, Eq(7));
     ASSERT_THAT(container->getSpatialComponent(e2).width, Eq(11));
@@ -135,28 +132,17 @@ TEST_F(Component_SortingTest, ComponentsArePreserved_whenTwoElementsSwapped) {
 }
 
 TEST_F(Component_SortingTest, SomeChildrenAreRemovedInTheMiddle) {
-    auto& e1 = createEntity();
+    createEntity();
     auto& e2 = createEntity();
     auto& e3 = createEntity();
-    auto& e4 = createEntity();
+    createEntity();
     auto& e5 = createEntity();
-    auto& e6 = createEntity();
+    createEntity();
 
     removeEntity(e2);
     removeEntity(e3);
     removeEntity(e5);
 
-    container->getOrderComponent(e1) = 2;
-    container->getOrderComponent(e4) = 0;
-    container->getOrderComponent(e6) = 1;
-    container->sort();
-
-    assertSort({2, 0, 1});
-
-    container->getOrderComponent(e1) = 0;
-    container->getOrderComponent(e4) = 1;
-    container->getOrderComponent(e6) = 2;
-    container->sort();
-
-    assertSort({0, 1, 2});
+    sortAndAssert({2, 0, 1});
+    sortAndAssert({0, 1, 2});
 }

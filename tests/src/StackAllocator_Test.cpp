@@ -35,7 +35,7 @@ TEST_F(StackAllocator_Test, NextAllocationAddressIsHigher) {
     ASSERT_THAT(getAddress(p2), Eq(getAddress(p1) + INT_SIZE));
 }
 
-TEST_F(StackAllocator_Test, Terminates_ifRequestedMoreThanCapacity) {
+TEST_F(StackAllocator_Test, Fails_ifRequestedMoreThanCapacity) {
     m_allocator.alloc(STACK_SIZE);
     ASSERT_DEATH(m_allocator.alloc(1), "");
 }
@@ -82,4 +82,13 @@ TEST_F(StackAllocator_Test, FreeToMarkerClearTillGivenMarker) {
     ASSERT_THAT(*p4, Eq(6));
     ASSERT_THAT(*p5, Eq(5));
     ASSERT_THAT(*p6, Eq(6));
+}
+
+TEST_F(StackAllocator_Test, FreeToMarkerFails_ifOldHigherMarkerGiven) {
+    m_allocator.alloc(INT_SIZE);
+    m_allocator.alloc(INT_SIZE);
+    Marker m = m_allocator.getMarker();
+    m_allocator.clear();
+
+    ASSERT_DEATH(m_allocator.freeToMarker(m), "");
 }

@@ -199,7 +199,7 @@ TEST_F(Component_Test, ForEach) {
         entities[i] = container->createEntity();
     }
     auto initValue = container->getSpatialComponent(entities[0]).width;
-    container->forEachComponent([](SpatialComponent& comp) {
+    container->forEach([](SpatialComponent& comp, int) {
         comp.width += 5;
     });
     for (int i = 0; i < SIZE; ++i) {

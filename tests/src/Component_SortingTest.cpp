@@ -146,3 +146,38 @@ TEST_F(Component_SortingTest, SomeChildrenAreRemovedInTheMiddle) {
     sortAndAssert({2, 0, 1});
     sortAndAssert({0, 1, 2});
 }
+
+TEST_F(Component_SortingTest, ForEachWalksThoughtInSortedOrder) {
+    auto& e1 = createEntity();
+    auto& e2 = createEntity();
+    auto& e3 = createEntity();
+
+    container->getSpatialComponent(e1).width = 7;
+    container->getSpatialComponent(e2).width = 11;
+    container->getSpatialComponent(e3).width = 13;
+    container->getDepthComponent(e1) = 7;
+    container->getDepthComponent(e2) = 11;
+    container->getDepthComponent(e3) = 13;
+
+    sort({2, 0, 1});
+
+    std::vector<int> vals = {11, 13, 7};
+    int i = 0;
+
+    container->forEach([&i, &vals](SpatialComponent& comp, int depth) {
+        ASSERT_THAT(comp.width, FloatEq(vals[i]));
+        ASSERT_THAT(depth, Eq(vals[i]));
+        ++i;
+    });
+
+    sort({0, 1, 2});
+
+    vals = {7, 11, 13};
+    i = 0;
+
+    container->forEach([&i, &vals](SpatialComponent& comp, int depth) {
+        ASSERT_THAT(comp.width, FloatEq(vals[i]));
+        ASSERT_THAT(depth, Eq(vals[i]));
+        ++i;
+    });
+}

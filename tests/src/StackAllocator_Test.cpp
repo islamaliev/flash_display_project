@@ -92,3 +92,13 @@ TEST_F(StackAllocator_Test, FreeToMarkerFails_ifOldHigherMarkerGiven) {
 
     ASSERT_DEATH(m_allocator.freeToMarker(m), "");
 }
+
+TEST_F(StackAllocator_Test, GetPointer) {
+    auto begin = (char*) getAddress(m_allocator.getPointer(m_allocator.getMarker()));
+    m_allocator.alloc(INT_SIZE);
+    m_allocator.alloc(INT_SIZE);
+    Marker m = m_allocator.getMarker();
+    auto end = (char*) m_allocator.getPointer(m);
+
+    ASSERT_THAT(end - begin, Eq(INT_SIZE + INT_SIZE));
+}

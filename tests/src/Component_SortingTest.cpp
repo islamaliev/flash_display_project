@@ -147,7 +147,7 @@ TEST_F(Component_SortingTest, SomeChildrenAreRemovedInTheMiddle) {
     sortAndAssert({0, 1, 2});
 }
 
-TEST_F(Component_SortingTest, ForEachWalksThoughtInSortedOrder) {
+TEST_F(Component_SortingTest, ForEachWalksThroughInSortedOrder) {
     auto& e1 = createEntity();
     auto& e2 = createEntity();
     auto& e3 = createEntity();

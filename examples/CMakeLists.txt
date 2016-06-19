@@ -11,3 +11,4 @@ include_directories(${flash_display_INCLUDE_DIRS})
 include(examples)
 
 add_example(example1)
+add_example(example2)

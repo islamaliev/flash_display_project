@@ -87,12 +87,16 @@ TEST_F(DisplayObject_DepthTest, DepthGetsInvalidated_ifRemoved) {
 
 TEST_F(DisplayObject_DepthTest, AllDescendantsDepthGetsInvalidated_ifRemoved) {
     makeHierarchy();
+
+    int initialDepth = cont1.depth();
+    
     ASSERT_THAT(cont2.depth(), Not(-1));
     ASSERT_THAT(cont3.depth(), Not(-1));
     ASSERT_THAT(obj1.depth(), Not(-1));
     ASSERT_THAT(obj2.depth(), Not(-1));
     ASSERT_THAT(obj3.depth(), Not(-1));
     cont1.removeChild(&cont2);
+    ASSERT_THAT(cont1.depth(), Eq(initialDepth));
     ASSERT_THAT(cont2.depth(), Eq(-1));
     ASSERT_THAT(cont3.depth(), Eq(-1));
     ASSERT_THAT(obj1.depth(), Eq(-1));
@@ -106,6 +110,7 @@ TEST_F(DisplayObject_DepthTest, AllDescendantsDepthGetsInvalidated_ifRemoved) {
     ASSERT_THAT(obj2.depth(), Not(-1));
     ASSERT_THAT(obj3.depth(), Not(-1));
     cont1.removeChildAt(0);
+    ASSERT_THAT(cont1.depth(), Eq(initialDepth));
     ASSERT_THAT(cont2.depth(), Eq(-1));
     ASSERT_THAT(cont3.depth(), Eq(-1));
     ASSERT_THAT(obj1.depth(), Eq(-1));
@@ -119,6 +124,7 @@ TEST_F(DisplayObject_DepthTest, AllDescendantsDepthGetsInvalidated_ifRemoved) {
     ASSERT_THAT(obj2.depth(), Not(-1));
     ASSERT_THAT(obj3.depth(), Not(-1));
     cont1.removeChildren();
+    ASSERT_THAT(cont1.depth(), Eq(initialDepth));
     ASSERT_THAT(cont2.depth(), Eq(-1));
     ASSERT_THAT(cont3.depth(), Eq(-1));
     ASSERT_THAT(obj1.depth(), Eq(-1));

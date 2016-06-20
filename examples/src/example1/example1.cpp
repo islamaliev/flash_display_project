@@ -20,7 +20,7 @@ public:
     virtual void tearDown() {}
 };
 
-class DisplayObject_Test : public Test {
+class DisplayObjectTest : public Test {
 public:
     virtual void setUp() override {
         m_obj = new DisplayObject();
@@ -97,10 +97,10 @@ private:
     DisplayObject* m_displayObject{nullptr};
 };
 
-class BlaTest : public DisplayObject_Test {
+class BlaTest : public DisplayObjectTest {
 public:
     void setUp() override {
-        DisplayObject_Test::setUp();
+        DisplayObjectTest::setUp();
         m_obj->setWidth(W * 0.1f);
         m_obj->setHeight(H * 0.1f);
         m_obj->setX(W * 0.5f);

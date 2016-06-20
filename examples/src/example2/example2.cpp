@@ -6,6 +6,7 @@
 using Stage = flash::display::Stage;
 using Texture = flash::display::Texture;
 using DisplayObject = flash::display::DisplayObject;
+using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 
 int main(int argc, const char** argv) {
     Stage stage(800, 600);
@@ -52,12 +53,15 @@ int main(int argc, const char** argv) {
         stage.addChild(&bitmap);
     }
 
+    DisplayObjectContainer parent;
+    parent.setX(600);
+    parent.setY(100);
+    stage.addChild(&parent);
+
     DisplayObject obj2;
     obj2.setWidth(160);
     obj2.setHeight(400);
-    obj2.setX(600);
-    obj2.setY(100);
-    stage.addChild(&obj2);
+    parent.addChild(&obj2);
 
     stage.start();
 

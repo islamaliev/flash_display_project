@@ -321,7 +321,5 @@ void offscreen::initFixtures() {
 
 void offscreen::clearFixtures() {
     delete stage;
-    for (auto it = tests.rbegin(); it != tests.rend(); ++it) {
-        delete (*it).second;
-    }
+    tests.clear();
 }

@@ -15,6 +15,7 @@ const char* nextOffscreen() {
     if (currentTest) {
         offscreen::stage->removeChildren();
         currentTest->tearDown();
+        delete currentTest;
     }
 
     if (testIndex < offscreen::tests.size()) {

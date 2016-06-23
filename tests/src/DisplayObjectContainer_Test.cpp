@@ -227,3 +227,37 @@ TEST_F(DisplayObjectContainer_Test, AddingSameChildAtSpecificIndex_whenAmongOthe
     ASSERT_THAT(cont1.getChildAt(1), Eq(&obj2));
     ASSERT_THAT(cont1.getChildAt(2), Eq(&obj1));
 }
+
+TEST_F(DisplayObjectContainer_Test, WhenChildIsDestroyed_itGetsRemovedFromParent) {
+    cont1.addChild(&obj1);
+
+    {
+        DisplayObject tempChild1;
+        DisplayObject tempChild2;
+
+        cont1.addChild(&tempChild2);
+        cont1.addChildAt(&tempChild1, 0);
+
+        ASSERT_TRUE(cont1.contains(&obj1));
+        ASSERT_TRUE(cont1.contains(&tempChild1));
+        ASSERT_TRUE(cont1.contains(&tempChild2));
+        ASSERT_THAT(cont1.numChildren(), Eq(3));
+    }
+
+    ASSERT_TRUE(cont1.contains(&obj1));
+    ASSERT_THAT(cont1.numChildren(), Eq(1));
+}
+
+TEST_F(DisplayObjectContainer_Test, WhenContainerIsDestroyed_allChildrenAreRemoved) {
+    {
+        DisplayObjectContainer tempCont;
+        tempCont.addChild(&obj1);
+        tempCont.addChildAt(&obj2, 0);
+
+        ASSERT_THAT(obj1.getParent(), Eq(&tempCont));
+        ASSERT_THAT(obj2.getParent(), Eq(&tempCont));
+    }
+
+    ASSERT_THAT(obj1.getParent(), Eq(nullptr));
+    ASSERT_THAT(obj2.getParent(), Eq(nullptr));
+}

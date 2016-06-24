@@ -1,20 +1,13 @@
 #include "gmock/gmock-matchers.h"
 #include "DisplayObject.h"
 #include "DisplayObjectContainer.h"
+#include "matrix_asserts.h"
 
 using namespace testing;
 using Mat4 = flash::math::Mat4;
 using DisplayObject = flash::display::DisplayObject;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Rectangle = flash::core::Rectangle;
-
-std::string toString(const Mat4& m) {
-    char buf[160];
-    sprintf(buf, "[%.2f, %.2f, %.2f, %.2f,   %.2f, %.2f, %.2f, %.2f,   %.2f, %.2f, %.2f, %.2f,   %.2f, %.2f, %.2f, %.2f]"
-            , m.v1.x, m.v1.y, m.v1.z, m.v1.w, m.v2.x, m.v2.y, m.v2.z, m.v2.w
-            , m.v3.x, m.v3.y, m.v3.z, m.v3.w, m.vt.x, m.vt.y, m.vt.z, m.vt.w);
-    return std::string(buf);
-}
 
 std::string toString(const Rectangle& rect) {
     char buf[100];
@@ -24,14 +17,6 @@ std::string toString(const Rectangle& rect) {
 
 class DisplayObject_Test : public testing::Test {
 public:
-
-    Mat4 getTransform(float x, float y, float scaleX, float scaleY) {
-        Mat4 m;
-        m.translate(x, y, 0);
-        m.scale(scaleX, scaleY, 0);
-        return m;
-    }
-
     ::testing::AssertionResult RectanglesEQ(const Rectangle& actual, const Rectangle& expected) {
         if (actual != expected) {
             return ::testing::AssertionFailure() << "rect " << toString(actual) << "!= " << toString(expected);
@@ -39,30 +24,7 @@ public:
         return ::testing::AssertionSuccess();
     }
 
-    ::testing::AssertionResult MatrixEQ(const Mat4& actual, const Mat4& expected) {
-        if (!actual.isEqual(expected)) {
-            return ::testing::AssertionFailure() << "\nactual matrix:   " << toString(actual)
-                   << "\nexpected matrix: " << toString(expected);
-        }
-        return ::testing::AssertionSuccess();
-    }
-
     DisplayObject displayObject;
-};
-
-class DisplayObject_GetTransformTest : public DisplayObject_Test {
-};
-
-class DisplayObject_GetRelativeTransformTest : public DisplayObject_GetTransformTest {
-public:
-
-    void makeHierarchy() {
-        grandparent.addChild(&parent);
-        parent.addChild(&displayObject);
-    }
-
-    DisplayObjectContainer parent;
-    DisplayObjectContainer grandparent;
 };
 
 TEST_F(DisplayObject_Test, SetWidth) {
@@ -163,60 +125,4 @@ TEST_F(DisplayObject_Test, GetBoundsInOwnSpace) {
     displayObject.setHeight(35);
     Rectangle r = displayObject.getBounds(&displayObject);
     ASSERT_TRUE(RectanglesEQ(r, {0, 0, 33, 35}));
-}
-
-TEST_F(DisplayObject_GetTransformTest, ForPositionAndScale) {
-    int x = 10;
-    int y = 20;
-    int w = 40;
-    int h = 60;
-    displayObject.setX(x);
-    displayObject.setY(y);
-    displayObject.setWidth(w);
-    displayObject.setHeight(h);
-    
-    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(), getTransform(x, y, w, h)));
-}
-
-TEST_F(DisplayObject_GetRelativeTransformTest, ReturnsIdentity_ifNoParent) {
-    DisplayObjectContainer notParent;
-    displayObject.setWidth(2);
-    displayObject.setY(10);
-    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&notParent), Mat4::IDENTITY));
-}
-
-TEST_F(DisplayObject_GetRelativeTransformTest, ReturnsInParentsSpace_ifParentGiven) {
-    makeHierarchy();
-    int x = 10;
-    int y = 20;
-    int w = 40;
-    int h = 60;
-    displayObject.setX(x);
-    displayObject.setY(y);
-    displayObject.setWidth(w);
-    displayObject.setHeight(h);
-    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&parent), getTransform(x, y, w, h)));
-}
-
-// TODO: enable test
-TEST_F(DisplayObject_GetRelativeTransformTest, DISABLED_ReturnsInGrandParentsSpace_ifGrandParentGiven) {
-    makeHierarchy();
-    int x = 10;
-    int y = 20;
-    parent.setX(x);
-    parent.setY(y);
-    displayObject.setX(x);
-    displayObject.setY(y);
-    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&grandparent), getTransform(x * 2, y * 2, 1, 1)));
-    int scaleX = 2;
-    int scaleY = 3;
-    parent.setWidth(scaleX);
-    parent.setHeight(scaleY);
-    displayObject.setWidth(scaleX);
-    displayObject.setHeight(scaleY);
-    parent.setX(0);
-    parent.setY(0);
-    displayObject.setX(0);
-    displayObject.setY(0);
-    ASSERT_TRUE(MatrixEQ(displayObject.getTransform(&grandparent), getTransform(0, 0, scaleX * scaleX, scaleY * scaleY)));
 }

@@ -142,3 +142,28 @@ TEST_F(TransformationsBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePres
     ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform(&stage)));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));
 }
+
+TEST_F(TransformationsBufferOrganizer_Test, DISABLED_EmptyParentHasNoEffect) {
+    DisplayObject obj1;
+    obj1.setWidth(37);
+    DisplayObjectContainer emptyCont;
+    emptyCont.setX(43);
+    DisplayObject obj2;
+    obj2.setHeight(11);
+    DisplayObjectContainer cont2;
+    cont2.setY(53);
+    DisplayObject obj3;
+    obj3.setScaleX(3);
+    stage.addChild(&obj1);
+    stage.addChild(&emptyCont);
+    stage.addChild(&obj2);
+    stage.addChild(&cont2);
+    cont2.addChild(&obj3);
+
+    run();
+
+    ASSERT_THAT(getNumMatrices(), Eq(3));
+    ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));
+}

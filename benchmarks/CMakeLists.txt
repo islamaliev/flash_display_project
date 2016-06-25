@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 2.8.4)
+project(tests)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
+set(DEPENDENCIES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies)
+
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+file(GLOB BENCHMARK_SOURCE_FILES ${SOURCE_DIR}/*.cpp)
+add_executable(${DISPLAY_LIB_TARGET_NAME}_benchmark ${BENCHMARK_SOURCE_FILES})
+set_target_properties(${DISPLAY_LIB_TARGET_NAME}_benchmark PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(${DISPLAY_LIB_TARGET_NAME}_benchmark ${DISPLAY_LIB_TARGET_NAME})
+

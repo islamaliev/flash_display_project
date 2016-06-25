@@ -26,3 +26,5 @@ add_subdirectory(render_tests)
 
 add_subdirectory(examples)
 
+add_subdirectory(benchmarks)
+

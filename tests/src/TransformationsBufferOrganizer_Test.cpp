@@ -31,7 +31,8 @@ public:
             , allocator(ALLOCATOR_SIZE) {}
 
     void run() {
-        stage.updateOrder();
+        render::RenderState r;
+        stage.preRender(r);
         Context::TransformationsBufferOrganizer::organize(stage, allocator, bufferData);
     }
 

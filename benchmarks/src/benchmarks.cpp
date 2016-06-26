@@ -41,8 +41,8 @@ public:
 
     ~FrameCounterStage() {}
 
-    void draw(flash::render::Context& context, flash::render::RenderState& state) override {
-        DisplayObjectContainer::draw(context, state);
+    void preRender(flash::render::RenderState& state) override {
+        DisplayObjectContainer::preRender(state);
         if (++m_currentFrame == m_numFrames) {
             stop();
         }

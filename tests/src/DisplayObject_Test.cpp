@@ -107,13 +107,6 @@ TEST_F(DisplayObject_Test, DefaultConstructor) {
     ASSERT_THAT(obj.visible(), Eq(true));
 }
 
-TEST_F(DisplayObject_Test, SetVisible) {
-    displayObject.setVisible(false);
-    ASSERT_THAT(displayObject.visible(), Eq(false));
-    displayObject.setVisible(true);
-    ASSERT_THAT(displayObject.visible(), Eq(true));
-}
-
 TEST_F(DisplayObject_Test, NewObjectHasNoParent) {
     ASSERT_FALSE(displayObject.getParent() != nullptr);
 }

@@ -1,5 +1,6 @@
-#include <Stage.h>
 #include "gmock/gmock-matchers.h"
+#include "Stage.h"
+#include "RenderState.h"
 
 using namespace testing;
 using namespace flash::display;
@@ -36,6 +37,11 @@ public:
         //            o4
     }
 
+    void updateStageOrder() {
+        flash::render::RenderState r;
+        stage.preRender(r);
+    }
+
     Stage stage;
     DisplayObject obj1;
     DisplayObject obj2;
@@ -48,7 +54,7 @@ public:
 };
 
 TEST_F(DisplayObject_OrderIndexTest, StageHasZeroOrder) {
-    stage.updateOrder();
+    updateStageOrder();
     ASSERT_THAT(stage.orderIndex(), Eq(0));
 }
 
@@ -57,7 +63,7 @@ TEST_F(DisplayObject_OrderIndexTest, ChildrenAreOrderedOneAfterAnother) {
     stage.addChild(&obj3);
     stage.addChildAt(&obj1, 0);
 
-    stage.updateOrder();
+    updateStageOrder();
     ASSERT_THAT(stage.orderIndex(), Eq(0));
     ASSERT_THAT(obj1.orderIndex(), Eq(1));
     ASSERT_THAT(obj2.orderIndex(), Eq(2));
@@ -67,7 +73,7 @@ TEST_F(DisplayObject_OrderIndexTest, ChildrenAreOrderedOneAfterAnother) {
 TEST_F(DisplayObject_OrderIndexTest, DescendantsAreOrderedInTreeTraverseOrder) {
     makeHierarchy();
 
-    stage.updateOrder();
+    updateStageOrder();
     ASSERT_THAT(stage.orderIndex(), Eq(0));
     ASSERT_THAT(obj1.orderIndex(), Eq(1));
     ASSERT_THAT(cont1.orderIndex(), Eq(2));
@@ -82,7 +88,7 @@ TEST_F(DisplayObject_OrderIndexTest, DescendantsAreOrderedInTreeTraverseOrder) {
 TEST_F(DisplayObject_OrderIndexTest, DescendantsOrderIsUpdatedProperly_whenBranchIsMoved) {
     makeHierarchy();
 
-    stage.updateOrder();
+    updateStageOrder();
 
     cont2.addChild(&cont4);
     //       s
@@ -95,7 +101,7 @@ TEST_F(DisplayObject_OrderIndexTest, DescendantsOrderIsUpdatedProperly_whenBranc
     //         /
     //       o4
 
-    stage.updateOrder();
+    updateStageOrder();
 
     ASSERT_THAT(stage.orderIndex(), Eq(0));
     ASSERT_THAT(obj1.orderIndex(), Eq(1));
@@ -119,7 +125,7 @@ TEST_F(DisplayObject_OrderIndexTest, DescendantsOrderIsUpdatedProperly_whenBranc
     //     /      /
     //   o2     o3
 
-    stage.updateOrder();
+    updateStageOrder();
 
     ASSERT_THAT(stage.orderIndex(), Eq(0));
     ASSERT_THAT(cont4.orderIndex(), Eq(1));

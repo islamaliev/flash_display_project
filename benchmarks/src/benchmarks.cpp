@@ -177,8 +177,62 @@ void benchmarkNormalTree() {
     _deleteObjects();
 }
 
+void benchmarkNormalTreeWithInvisibleNodes() {
+    FrameCounterStage stage;
+    stage.init();
+    stage.setNumFrames(50);
+    std::cout << "----------------------------------" << std::endl;
+    std::cout << "normal tree with invisible nodes" << std::endl;
+
+    _objects.clear();
+    _objects.reserve(200000);
+
+    std::vector<int> arr = {1, 3, 2, 1, 4, 2};
+    int arrInd = 0;
+
+    int invisIndex = 20;
+    int invisNum = 0;
+
+    DisplayObjectContainer* currentCont{nullptr};
+    _addNewContainerTo(&stage);
+    int beginIndex = 0;
+    int endIndex = 1;
+    for (int i = 0; i < 17; ++i) {
+        int numChildren = arr[arrInd];
+        for (int j = beginIndex; j < endIndex; ++j) {
+            currentCont = static_cast<DisplayObjectContainer*>(_objects[j]);
+            if (j && j % invisIndex == 0) {
+                currentCont->setVisible(false);
+                ++invisNum;
+            }
+            for (int k = 0; k < numChildren; ++k) {
+                _addNewContainerTo(currentCont);
+            }
+        }
+        beginIndex = endIndex;
+        endIndex = (int) _objects.size();
+        if (++arrInd == arr.size())
+            arrInd = 0;
+    }
+    for (int i = beginIndex; i < endIndex; ++i) {
+        currentCont = static_cast<DisplayObjectContainer*>(_objects[i]);
+        if (i % invisIndex == 0) {
+            currentCont->setVisible(false);
+            ++invisNum;
+        }
+        _addNewObjectTo(currentCont);
+    }
+
+    HighResolutionTimer timer;
+    stage.start();
+    _outputLoopTime(timer.elapsed(), stage.numFrames());
+    std::cout << "invisible objects: " << invisNum << std::endl;
+    _deleteObjects();
+}
+
 int main(int argc, char** argv) {
     benchmarkDeepTree();
     benchmarkFlatTree();
     benchmarkNormalTree();
+    benchmarkNormalTreeWithInvisibleNodes();
 }

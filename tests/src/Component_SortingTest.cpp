@@ -37,15 +37,19 @@ public:
                 depthBaseAddr = addr;
         }
 
+        auto negativeStart = expectedOrder.size() - std::count(expectedOrder.cbegin(), expectedOrder.cend(), -1);
+
         std::vector<int> actualSpatialOrder = {};
         std::vector<int> actualDepthOrder = {};
         for (int i = 0; i < expectedOrder.size(); ++i) {
             const auto& e = *m_entities[i];
             auto addr = getAddress(container->getSpatialComponent(e));
-            actualSpatialOrder.push_back((int) (addr - spatialBaseAddr) / SPACIAL_SIZE);
+            int spatialAddrIndex = (int) (addr - spatialBaseAddr) / SPACIAL_SIZE;
+            actualSpatialOrder.push_back(spatialAddrIndex < negativeStart ? spatialAddrIndex : -1);
 
             addr = getAddress(container->getDepthComponent(e));
-            actualDepthOrder.push_back((int) (addr - depthBaseAddr) / DEPTH_SIZE);
+            int depthAddrIndex = (int) (addr - depthBaseAddr) / DEPTH_SIZE;
+            actualDepthOrder.push_back(depthAddrIndex < negativeStart ? depthAddrIndex : -1);
         }
 
         ASSERT_THAT(actualSpatialOrder, Eq(expectedOrder));
@@ -180,4 +184,82 @@ TEST_F(Component_SortingTest, ForEachWalksThroughInSortedOrder) {
         ASSERT_THAT(depth, Eq(vals[i]));
         ++i;
     });
+}
+
+TEST_F(Component_SortingTest, NegativeOrdersAreInTheEnd) {
+    auto& e1 = createEntity();
+    auto& e2 = createEntity();
+    auto& e3 = createEntity();
+    auto& e4 = createEntity();
+    auto& e5 = createEntity();
+
+    container->getSpatialComponent(e1).width = 1;
+    container->getSpatialComponent(e2).width = 2;
+    container->getSpatialComponent(e3).width = 3;
+    container->getSpatialComponent(e4).width = 4;
+    container->getSpatialComponent(e5).width = 5;
+    container->getDepthComponent(e1) = 1;
+    container->getDepthComponent(e2) = 2;
+    container->getDepthComponent(e3) = 3;
+    container->getDepthComponent(e4) = 4;
+    container->getDepthComponent(e5) = 5;
+
+    sortAndAssert({0, -1, 1, -1, 2});
+
+    std::vector<int> vals = {1, 3, 5};
+    int i = 0;
+
+    container->forEach([&i, &vals](SpatialComponent& comp, int depth) {
+        if (i < 3) {
+            ASSERT_THAT(comp.width, FloatEq(vals[i]));
+            ASSERT_THAT(depth, Eq(vals[i]));
+        }
+        ++i;
+    });
+}
+
+TEST_F(Component_SortingTest, afterNegativeIsSetToNormal_dataIsNotHarmed) {
+    auto& e1 = createEntity();
+    auto& e2 = createEntity();
+    auto& e3 = createEntity();
+    auto& e4 = createEntity();
+    auto& e5 = createEntity();
+
+    container->getSpatialComponent(e1).width = 1;
+    container->getSpatialComponent(e2).width = 2;
+    container->getSpatialComponent(e3).width = 3;
+    container->getSpatialComponent(e4).width = 4;
+    container->getSpatialComponent(e5).width = 5;
+    container->getDepthComponent(e1) = 1;
+    container->getDepthComponent(e2) = 2;
+    container->getDepthComponent(e3) = 3;
+    container->getDepthComponent(e4) = 4;
+    container->getDepthComponent(e5) = 5;
+
+    sort({0, -1, 1, -1, 2});
+    sort({0, 1, 2, 3, 4});
+
+    int i = 1;
+
+    container->forEach([&i](SpatialComponent& comp, int depth) {
+        ASSERT_THAT(comp.width, FloatEq(i));
+        ASSERT_THAT(depth, Eq(i));
+        ++i;
+    });
+}
+
+TEST_F(Component_SortingTest, ForEachDoesNotWalsThoughtNegativeOrderedComponents) {
+    createEntity();
+    createEntity();
+    createEntity();
+    createEntity();
+    createEntity();
+
+    sort({0, -1, 1, -1, 2});
+
+    int i = 0;
+    container->forEach([&i](SpatialComponent& comp, int depth) {
+        ++i;
+    });
+    ASSERT_THAT(i, Eq(3));
 }

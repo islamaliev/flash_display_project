@@ -2,6 +2,7 @@
 #include "ComponentContainer.h"
 #include "Contex.h"
 #include "Stage.h"
+#include "RenderState.h"
 #include "StackAllocator.h"
 #include "DisplayObject.h"
 #include "Mat4.h"

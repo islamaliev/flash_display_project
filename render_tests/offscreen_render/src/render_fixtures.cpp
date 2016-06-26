@@ -182,7 +182,7 @@ public:
     }
 };
 
-class TextureTest : public Test {
+class ImageTest : public Test {
 public:
     void setUp() override {
     }
@@ -217,10 +217,10 @@ protected:
     std::vector<Texture*> m_textures;
 };
 
-class FullscreenTexture : public TextureTest {
+class FullscreenImage: public ImageTest {
 public:
     void setUp() override {
-        TextureTest::setUp();
+        ImageTest::setUp();
         Image* image = prepareImage("texture.jpg");
         image->setX(0);
         image->setY(0);
@@ -229,10 +229,10 @@ public:
     }
 };
 
-class TextureAndDisplayObject : public TextureTest {
+class ImageAndDisplayObject : public ImageTest {
 public:
     void setUp() override {
-        TextureTest::setUp();
+        ImageTest::setUp();
         Image* image = prepareImage("texture.jpg");
         image->setX(W * 0.1f);
         image->setY(H * 0.1f);
@@ -248,7 +248,7 @@ public:
     }
 
     virtual void tearDown() override {
-        TextureTest::tearDown();
+        ImageTest::tearDown();
         delete m_displayObject;
     }
 
@@ -256,10 +256,10 @@ private:
     DisplayObject* m_displayObject{nullptr};
 };
 
-class TwoTextures : public TextureTest {
+class TwoImages : public ImageTest {
 public:
     void setUp() override {
-        TextureTest::setUp();
+        ImageTest::setUp();
         Image* image = prepareImage("texture.jpg");
         image->setX(0);
         image->setY(H * 0.5f);
@@ -302,6 +302,36 @@ public:
     }
 };
 
+class InvisibleObject : public DisplayObjectTest {
+    void setUp() override {
+        DisplayObjectTest::setUp();
+        m_obj->setVisible(false);
+    }
+};
+
+class InvisibleParent : public ParentTest {
+    void setUp() override {
+        ParentTest::setUp();
+        m_parent->setVisible(false);
+    }
+};
+
+class InvisibleAndVisibleImages : public ImageTest {
+    void setUp() override {
+        ImageTest::setUp();
+        Image* image = prepareImage("texture.jpg");
+        image->setWidth(W * 0.5f);
+        image->setHeight(H * 0.5f);
+        image->setVisible(false);
+
+        Image* image2 = prepareImage("texture2.jpg");
+        image2->setX(W * 0.5f);
+        image2->setY(H * 0.5f);
+        image2->setWidth(W * 0.5f);
+        image2->setHeight(H * 0.5f);
+    }
+};
+
 void offscreen::initFixtures() {
     stage = new flash::display::Stage(W, H);
     RENDER(SizedChild);
@@ -312,11 +342,14 @@ void offscreen::initFixtures() {
     RENDER(MovedChildInScaledContainer);
     RENDER(ChildInMovedParentAndGrandParent);
     RENDER(ChildInScaledParentAndGrandParent);
-    RENDER(FullscreenTexture);
-    RENDER(TextureAndDisplayObject);
-    RENDER(TwoTextures);
+    RENDER(FullscreenImage);
+    RENDER(ImageAndDisplayObject);
+    RENDER(TwoImages);
     RENDER(ObjectWithPivot);
     RENDER(ScaledObjectWithPivot);
+    RENDER(InvisibleObject);
+    RENDER(InvisibleParent);
+    RENDER(InvisibleAndVisibleImages);
 }
 
 void offscreen::clearFixtures() {

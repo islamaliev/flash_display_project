@@ -35,7 +35,26 @@ protected:
     DisplayObject* m_obj;
 };
 
-class TextureTest : public Test {
+class ParentTest : public Test {
+public:
+    void setUp() override {
+        m_child = new DisplayObject();
+        m_parent = new DisplayObjectContainer();
+        m_parent->addChild(m_child);
+        stage->addChild(m_parent);
+    }
+
+    void tearDown() override {
+        delete m_child;
+        delete m_parent;
+    };
+
+protected:
+    DisplayObject* m_child;
+    DisplayObjectContainer* m_parent;
+};
+
+class ImageTest : public Test {
 public:
     void setUp() override {
     }
@@ -70,113 +89,31 @@ protected:
     std::vector<Texture*> m_textures;
 };
 
-class TextureAndDisplayObject : public TextureTest {
-public:
+class InvisibleAndVisibleImages : public ImageTest {
     void setUp() override {
-        TextureTest::setUp();
+        ImageTest::setUp();
         Image* image = prepareImage("texture.jpg");
-//        image->setX(W * 0.1f);
-//        image->setY(H * 0.1f);
         image->setWidth(W * 0.5f);
         image->setHeight(H * 0.5f);
+        image->setVisible(false);
 
-        m_displayObject = new DisplayObject();
-        m_displayObject->setX(W * 0.1f);
-        m_displayObject->setY(H * 0.6f);
-        m_displayObject->setScaleX(W * 0.8f);
-        m_displayObject->setScaleY(H * 0.3f);
-        stage->addChild(m_displayObject);
-    }
-
-    virtual void tearDown() override {
-        TextureTest::tearDown();
-        delete m_displayObject;
-    }
-
-private:
-    DisplayObject* m_displayObject{nullptr};
-};
-
-class BlaTest : public DisplayObjectTest {
-public:
-    void setUp() override {
-        DisplayObjectTest::setUp();
-        m_obj->setWidth(W * 0.1f);
-        m_obj->setHeight(H * 0.1f);
-        m_obj->setX(W * 0.5f);
-        m_obj->setY(H * 0.5f);
-        m_obj->setScaleX(5);
-        m_obj->setScaleY(5);
-        m_obj->setPivotX(W * 0.05f);
-        m_obj->setPivotY(H * 0.05f);
+        Image* image2 = prepareImage("texture2.jpg");
+        image2->setX(W * 0.5f);
+        image2->setY(H * 0.5f);
+        image2->setWidth(W * 0.5f);
+        image2->setHeight(H * 0.5f);
     }
 };
 
 void example1() {
     stage = new Stage(W, H);
 
-    Test* test = new BlaTest();
-//    Test* test = new TextureAndDisplayObject();
+    Test* test = new InvisibleAndVisibleImages();
     test->setUp();
 
     stage->start();
 }
 
-void example2() {
-    Stage stage(800, 600);
-
-    DisplayObject obj1;
-    obj1.setScaleX(200);
-    obj1.setScaleY(80);
-    obj1.setX(100);
-    obj1.setY(450);
-
-    stage.addChild(&obj1);
-
-
-    DisplayObject obj2;
-    obj2.setScaleX(80);
-    obj2.setScaleY(80);
-    obj2.setX(40);
-    obj2.setY(80);
-//    stage.addChild(&obj2);
-
-
-    flash::filesystem::FileLoader loader;
-    loader.load("texture_big.jpg");
-
-    if (loader.size()) {
-        flash::display::Texture* texture = (Texture*) loader.data();
-//        texture->bindData();
-
-        flash::display::Image image;
-        image.setTexture(texture);
-        image.setX(100);
-        image.setY(100);
-        image.setScaleX(300);
-        image.setScaleY(200);
-        stage.addChild(&image);
-    }
-
-    loader.load("texture2_big.jpg");
-
-    if (loader.size()) {
-        flash::display::Texture* texture = (Texture*) loader.data();
-//        texture->bindData();
-
-        flash::display::Image image;
-        image.setTexture(texture);
-        image.setX(500);
-        image.setY(200);
-        image.setScaleX(200);
-        image.setScaleY(200);
-        stage.addChild(&image);
-    }
-
-    stage.start();
-}
-
 int main(int argc, const char** argv) {
     example1();
-//    example2();
 }

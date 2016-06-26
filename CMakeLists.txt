@@ -8,7 +8,11 @@ if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
     message(SEND_ERROR "In-source builds are not allowed.")
 endif ()
 
+if(MSVC)
+set (CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} /EHsc /D_USE_MATH_DEFINES")
+else()
 set (CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -std=c++14 -Wall -Wno-missing-braces")
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 

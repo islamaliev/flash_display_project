@@ -139,21 +139,21 @@ void benchmarkFlatTree() {
 void benchmarkNormalTree() {
     FrameCounterStage stage;
     stage.init();
-    stage.setNumFrames(30);
+    stage.setNumFrames(50);
     std::cout << "----------------------------------" << std::endl;
     std::cout << "normal tree" << std::endl;
 
     _objects.clear();
-    _objects.reserve(500000);
+    _objects.reserve(200000);
 
     std::vector<int> arr = {1, 3, 2, 1, 4, 2};
     int arrInd = 0;
 
     DisplayObjectContainer* currentCont{nullptr};
-    DisplayObjectContainer* cont = _addNewContainerTo(&stage);
+    _addNewContainerTo(&stage);
     int beginIndex = 0;
     int endIndex = 1;
-    for (int i = 0; i < 19; ++i) {
+    for (int i = 0; i < 17; ++i) {
         int numChildren = arr[arrInd];
         for (int j = beginIndex; j < endIndex; ++j) {
             currentCont = static_cast<DisplayObjectContainer*>(_objects[j]);

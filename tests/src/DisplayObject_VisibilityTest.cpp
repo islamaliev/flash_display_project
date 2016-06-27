@@ -71,7 +71,7 @@ TEST_F(DisplayObject_VisibilityTest, ifContainerInvisible_allChildrensOrderIsRes
 
 TEST_F(DisplayObject_VisibilityTest, ifInvisible_siblingTakesItsOrder) {
     stage.addChild(&cont1);
-    stage.addChild(&cont2);
+    cont1.addChild(&cont2);
     stage.addChild(&obj1);
     stage.addChild(&obj2);
     updateStageOrder();
@@ -93,7 +93,6 @@ TEST_F(DisplayObject_VisibilityTest, ifVisible_orderIsRestored) {
     updateStageOrder();
 
     int orderCont1 = cont1.orderIndex();
-    int orderCont2 = cont2.orderIndex();
     int orderObj1 = obj1.orderIndex();
     int orderObj2 = obj2.orderIndex();
 
@@ -104,8 +103,7 @@ TEST_F(DisplayObject_VisibilityTest, ifVisible_orderIsRestored) {
     ASSERT_THAT(obj1.orderIndex(), Not(orderObj1));
     ASSERT_THAT(obj2.orderIndex(), Not(orderObj2));
     ASSERT_THAT(cont1.orderIndex(), Not(orderCont1));
-    ASSERT_THAT(cont2.orderIndex(), Not(orderCont2));
-    
+
     cont1.setVisible(true);
     obj2.setVisible(true);
     updateStageOrder();
@@ -113,6 +111,5 @@ TEST_F(DisplayObject_VisibilityTest, ifVisible_orderIsRestored) {
     ASSERT_THAT(obj1.orderIndex(), Eq(orderObj1));
     ASSERT_THAT(obj2.orderIndex(), Eq(orderObj2));
     ASSERT_THAT(cont1.orderIndex(), Eq(orderCont1));
-    ASSERT_THAT(cont2.orderIndex(), Eq(orderCont2));
 }
 

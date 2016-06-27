@@ -130,8 +130,7 @@ TEST_F(TransformationsBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePres
     ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));
 }
 
-// TODO: enable test
-TEST_F(TransformationsBufferOrganizer_Test, DISABLED_EmptyParentHasNoEffect) {
+TEST_F(TransformationsBufferOrganizer_Test, EmptyParentHasNoEffect) {
     DisplayObject obj1;
     obj1.setWidth(37);
     DisplayObjectContainer emptyCont;

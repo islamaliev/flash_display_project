@@ -54,6 +54,7 @@ public:
 };
 
 TEST_F(DisplayObject_OrderIndexTest, StageHasZeroOrder) {
+    stage.addChild(&obj1);
     updateStageOrder();
     ASSERT_THAT(stage.orderIndex(), Eq(0));
 }
@@ -68,6 +69,24 @@ TEST_F(DisplayObject_OrderIndexTest, ChildrenAreOrderedOneAfterAnother) {
     ASSERT_THAT(obj1.orderIndex(), Eq(1));
     ASSERT_THAT(obj2.orderIndex(), Eq(2));
     ASSERT_THAT(obj3.orderIndex(), Eq(3));
+}
+
+TEST_F(DisplayObject_OrderIndexTest, EmptyParentHasInvalidOrder) {
+    stage.addChild(&cont1);
+    cont1.addChild(&obj1);
+    stage.addChild(&cont2);
+    stage.addChild(&obj2);
+    stage.addChild(&obj3);
+    cont2.addChild(&cont3);
+
+    updateStageOrder();
+    ASSERT_THAT(stage.orderIndex(), Not(-1));
+    ASSERT_THAT(obj1.orderIndex(), Not(-1));
+    ASSERT_THAT(obj2.orderIndex(), Not(-1));
+    ASSERT_THAT(obj3.orderIndex(), Not(-1));
+    ASSERT_THAT(cont1.orderIndex(), Not(-1));
+    ASSERT_THAT(cont2.orderIndex(), Not(-1));
+    ASSERT_THAT(cont3.orderIndex(), Eq(-1));
 }
 
 TEST_F(DisplayObject_OrderIndexTest, DescendantsAreOrderedInTreeTraverseOrder) {

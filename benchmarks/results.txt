@@ -1,0 +1,25 @@
+----------------------------------
+deep tree
+    total objects: 99
+    loop time (frames: 100): 1.83463
+    frame time: 0.0183463
+    fps: 54.5068
+----------------------------------
+flat tree
+    total objects: 201
+    loop time (frames: 100): 1.71165
+    frame time: 0.0171165
+    fps: 58.4232
+----------------------------------
+normal tree
+    total objects: 151769
+    loop time (frames: 50): 6.99403
+    frame time: 0.139881
+    fps: 7.14895
+----------------------------------
+normal tree with invisible nodes
+    total objects: 151769
+    loop time (frames: 50): 3.87475
+    frame time: 0.0774951
+    fps: 12.904
+    invisible objects: 4823

@@ -226,7 +226,7 @@ void benchmarkNormalTreeWithInvisibleNodes() {
     HighResolutionTimer timer;
     stage.start();
     _outputLoopTime(timer.elapsed(), stage.numFrames());
-    std::cout << "invisible objects: " << invisNum << std::endl;
+    std::cout << "    invisible objects: " << invisNum << std::endl;
     _deleteObjects();
 }
 

@@ -4,6 +4,7 @@
 #include <FileLoader.h>
 #include <Texture.h>
 #include <Image.h>
+#include <Shape.h>
 
 using namespace offscreen;
 using namespace flash::display;
@@ -11,7 +12,7 @@ using namespace flash::display;
 class DisplayObjectTest : public Test {
 public:
     virtual void setUp() override {
-        m_obj = new DisplayObject();
+        m_obj = new Shape();
         stage->addChild(m_obj);
     }
 
@@ -57,7 +58,7 @@ public:
 class TwoChildrenAtCorners : public Test {
 public:
     void setUp() override {
-        m_obj1 = new DisplayObject();
+        m_obj1 = new Shape();
         m_obj1->setWidth(W * 0.2f);
         m_obj1->setHeight(H * 0.2f);
         m_obj1->setX(W * 0.1f);
@@ -65,7 +66,7 @@ public:
 
         stage->addChild(m_obj1);
 
-        m_obj2 = new DisplayObject();
+        m_obj2 = new Shape();
         m_obj2->setWidth(W * 0.4f);
         m_obj2->setHeight(H * 0.4f);
         m_obj2->setX(W * 0.5f);
@@ -86,7 +87,7 @@ private:
 class ParentTest : public Test {
 public:
     void setUp() override {
-        m_child = new DisplayObject();
+        m_child = new Shape();
         m_parent = new DisplayObjectContainer();
         m_parent->addChild(m_child);
         stage->addChild(m_parent);
@@ -130,7 +131,7 @@ public:
 class GrandParentTest : public Test {
 public:
     void setUp() override {
-        m_child = new DisplayObject();
+        m_child = new Shape();
         m_parent = new DisplayObjectContainer();
         m_grandparent = new DisplayObjectContainer();
         m_parent->addChild(m_child);
@@ -239,7 +240,7 @@ public:
         image->setWidth(W * 0.8f);
         image->setHeight(H * 0.4f);
 
-        m_displayObject = new DisplayObject();
+        m_displayObject = new Shape();
         m_displayObject->setX(W * 0.1f);
         m_displayObject->setY(H * 0.6f);
         m_displayObject->setWidth(W * 0.8f);

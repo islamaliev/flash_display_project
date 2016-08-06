@@ -2,17 +2,18 @@
 #include <Texture.h>
 #include <Image.h>
 #include <Stage.h>
+#include <Shape.h>
 
 using Stage = flash::display::Stage;
 using Texture = flash::display::Texture;
-using DisplayObject = flash::display::DisplayObject;
+using Shape = flash::display::Shape;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Image = flash::display::Image;
 
 int main(int argc, const char** argv) {
     Stage stage(800, 600);
 
-    DisplayObject obj1;
+    Shape obj1;
     obj1.setWidth(300);
     obj1.setHeight(100);
     obj1.setX(20);
@@ -60,7 +61,7 @@ int main(int argc, const char** argv) {
     parent2.setY(100);
     parent2.addChild(&parent3);
 
-    DisplayObject obj2;
+    Shape obj2;
     obj2.setWidth(160);
     obj2.setHeight(400);
     parent3.addChild(&obj2);

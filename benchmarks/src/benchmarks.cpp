@@ -1,10 +1,12 @@
 #include <DisplayObjectContainer.h>
 #include <iostream>
 #include "Stage.h"
+#include "Shape.h"
 
 using Stage = flash::display::Stage;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using DisplayObject = flash::display::DisplayObject;
+using Shape = flash::display::Shape;
 
 #define W 800
 #define H 600
@@ -72,7 +74,7 @@ namespace {
     }
 
     DisplayObject* _addNewObjectTo(DisplayObjectContainer* parent) {
-        DisplayObject* object = new DisplayObject();
+        DisplayObject* object = new Shape();
         parent->addChild(object);
         _objects.push_back(object);
         return object;

@@ -1,6 +1,7 @@
 #include "gmock/gmock-matchers.h"
 #include "Stage.h"
 #include "RenderState.h"
+#include <Shape.h>
 
 using namespace testing;
 using namespace flash::display;
@@ -43,10 +44,10 @@ public:
     }
 
     Stage stage;
-    DisplayObject obj1;
-    DisplayObject obj2;
-    DisplayObject obj3;
-    DisplayObject obj4;
+    Shape obj1;
+    Shape obj2;
+    Shape obj3;
+    Shape obj4;
     DisplayObjectContainer cont1;
     DisplayObjectContainer cont2;
     DisplayObjectContainer cont3;

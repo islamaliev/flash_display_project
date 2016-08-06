@@ -1,11 +1,11 @@
 #include "gmock/gmock-matchers.h"
-#include "DisplayObject.h"
+#include "Shape.h"
 #include "DisplayObjectContainer.h"
 #include "matrix_asserts.h"
 
 using namespace testing;
 using Mat4 = flash::math::Mat4;
-using DisplayObject = flash::display::DisplayObject;
+using Shape = flash::display::Shape;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Rectangle = flash::core::Rectangle;
 
@@ -24,98 +24,98 @@ public:
         return ::testing::AssertionSuccess();
     }
 
-    DisplayObject displayObject;
+    Shape obj;
 };
 
 TEST_F(DisplayObject_Test, SetWidth) {
-    displayObject.setWidth(100);
-    ASSERT_THAT(displayObject.width(), Eq(100));
-    displayObject.setWidth(200);
-    ASSERT_THAT(displayObject.width(), Eq(200));
+    obj.setWidth(100);
+    ASSERT_THAT(obj.width(), Eq(100));
+    obj.setWidth(200);
+    ASSERT_THAT(obj.width(), Eq(200));
 }
 
 TEST_F(DisplayObject_Test, SetHeight) {
-    displayObject.setHeight(100);
-    ASSERT_THAT(displayObject.height(), Eq(100));
-    displayObject.setHeight(200);
-    ASSERT_THAT(displayObject.height(), Eq(200));
+    obj.setHeight(100);
+    ASSERT_THAT(obj.height(), Eq(100));
+    obj.setHeight(200);
+    ASSERT_THAT(obj.height(), Eq(200));
 }
 
 TEST_F(DisplayObject_Test, SetX) {
-    displayObject.setX(3);
-    ASSERT_THAT(displayObject.x(), Eq(3));
-    displayObject.setX(7);
-    ASSERT_THAT(displayObject.x(), Eq(7));
+    obj.setX(3);
+    ASSERT_THAT(obj.x(), Eq(3));
+    obj.setX(7);
+    ASSERT_THAT(obj.x(), Eq(7));
 }
 
 TEST_F(DisplayObject_Test, SetY) {
-    displayObject.setY(5);
-    ASSERT_THAT(displayObject.y(), Eq(5));
-    displayObject.setY(9);
-    ASSERT_THAT(displayObject.y(), Eq(9));
+    obj.setY(5);
+    ASSERT_THAT(obj.y(), Eq(5));
+    obj.setY(9);
+    ASSERT_THAT(obj.y(), Eq(9));
 }
 
 TEST_F(DisplayObject_Test, SetPivotX) {
-    displayObject.setPivotX(3);
-    ASSERT_THAT(displayObject.pivotX(), Eq(3));
-    displayObject.setPivotX(7);
-    ASSERT_THAT(displayObject.pivotX(), Eq(7));
+    obj.setPivotX(3);
+    ASSERT_THAT(obj.pivotX(), Eq(3));
+    obj.setPivotX(7);
+    ASSERT_THAT(obj.pivotX(), Eq(7));
 }
 
 TEST_F(DisplayObject_Test, SetPivotY) {
-    displayObject.setPivotY(5);
-    ASSERT_THAT(displayObject.pivotY(), Eq(5));
-    displayObject.setPivotY(9);
-    ASSERT_THAT(displayObject.pivotY(), Eq(9));
+    obj.setPivotY(5);
+    ASSERT_THAT(obj.pivotY(), Eq(5));
+    obj.setPivotY(9);
+    ASSERT_THAT(obj.pivotY(), Eq(9));
 }
 
 TEST_F(DisplayObject_Test, SetRotation) {
-    displayObject.setRotation(1);
-    ASSERT_THAT(displayObject.rotation(), Eq(1));
-    displayObject.setRotation(2);
-    ASSERT_THAT(displayObject.rotation(), Eq(2));
+    obj.setRotation(1);
+    ASSERT_THAT(obj.rotation(), Eq(1));
+    obj.setRotation(2);
+    ASSERT_THAT(obj.rotation(), Eq(2));
 }
 
 TEST_F(DisplayObject_Test, SetScaleX) {
-    displayObject.setScaleX(3);
-    ASSERT_THAT(displayObject.scaleX(), Eq(3));
-    displayObject.setScaleX(7);
-    ASSERT_THAT(displayObject.scaleX(), Eq(7));
+    obj.setScaleX(3);
+    ASSERT_THAT(obj.scaleX(), Eq(3));
+    obj.setScaleX(7);
+    ASSERT_THAT(obj.scaleX(), Eq(7));
 }
 
 TEST_F(DisplayObject_Test, SetScaleY) {
-    displayObject.setScaleY(5);
-    ASSERT_THAT(displayObject.scaleY(), Eq(5));
-    displayObject.setScaleY(9);
-    ASSERT_THAT(displayObject.scaleY(), Eq(9));
+    obj.setScaleY(5);
+    ASSERT_THAT(obj.scaleY(), Eq(5));
+    obj.setScaleY(9);
+    ASSERT_THAT(obj.scaleY(), Eq(9));
 }
 
 TEST_F(DisplayObject_Test, DefaultConstructor) {
-    DisplayObject obj;
-    ASSERT_THAT(obj.x(), Eq(0));
-    ASSERT_THAT(obj.y(), Eq(0));
-    ASSERT_THAT(obj.width(), Eq(40));
-    ASSERT_THAT(obj.height(), Eq(40));
-    ASSERT_THAT(obj.scaleX(), Eq(1));
-    ASSERT_THAT(obj.scaleY(), Eq(1));
-    ASSERT_THAT(obj.pivotX(), Eq(0));
-    ASSERT_THAT(obj.pivotY(), Eq(0));
-    ASSERT_THAT(obj.rotation(), Eq(0));
-    ASSERT_THAT(obj.depth(), Eq(-1));
-    ASSERT_THAT(obj.orderIndex(), Eq(-1));
-    ASSERT_THAT(obj.treeSize(), Eq(1));
-    ASSERT_THAT(obj.visible(), Eq(true));
+    Shape localObj;
+    ASSERT_THAT(localObj.x(), Eq(0));
+    ASSERT_THAT(localObj.y(), Eq(0));
+    ASSERT_THAT(localObj.width(), Eq(40));
+    ASSERT_THAT(localObj.height(), Eq(40));
+    ASSERT_THAT(localObj.scaleX(), Eq(1));
+    ASSERT_THAT(localObj.scaleY(), Eq(1));
+    ASSERT_THAT(localObj.pivotX(), Eq(0));
+    ASSERT_THAT(localObj.pivotY(), Eq(0));
+    ASSERT_THAT(localObj.rotation(), Eq(0));
+    ASSERT_THAT(localObj.depth(), Eq(-1));
+    ASSERT_THAT(localObj.orderIndex(), Eq(-1));
+    ASSERT_THAT(localObj.treeSize(), Eq(1));
+    ASSERT_THAT(localObj.visible(), Eq(true));
 }
 
 TEST_F(DisplayObject_Test, NewObjectHasNoParent) {
-    ASSERT_FALSE(displayObject.getParent() != nullptr);
+    ASSERT_FALSE(obj.getParent() != nullptr);
 }
 
 TEST_F(DisplayObject_Test, GetBoundsInOwnSpace) {
-    displayObject.setX(10);
-    displayObject.setY(10);
-    displayObject.setWidth(33);
-    displayObject.setHeight(35);
-    Rectangle r = displayObject.getBounds(&displayObject);
+    obj.setX(10);
+    obj.setY(10);
+    obj.setWidth(33);
+    obj.setHeight(35);
+    Rectangle r = obj.getBounds(&obj);
     ASSERT_TRUE(RectanglesEQ(r, {0, 0, 33, 35}));
 }

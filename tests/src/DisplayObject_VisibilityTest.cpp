@@ -1,9 +1,10 @@
+#include <Shape.h>
 #include "gmock/gmock-matchers.h"
 #include "Stage.h"
 #include "RenderState.h"
 
 using namespace testing;
-using DisplayObject = flash::display::DisplayObject;
+using Shape = flash::display::Shape;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Stage = flash::display::Stage;
 
@@ -17,8 +18,8 @@ public:
         stage.preRender(r);
     }
 
-    DisplayObject obj1;
-    DisplayObject obj2;
+    Shape obj1;
+    Shape obj2;
     DisplayObjectContainer cont1;
     DisplayObjectContainer cont2;
     Stage stage;

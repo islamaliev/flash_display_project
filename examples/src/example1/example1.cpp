@@ -2,6 +2,7 @@
 #include <FileLoader.h>
 #include <Texture.h>
 #include <Image.h>
+#include <Shape.h>
 
 using namespace flash::display;
 
@@ -23,7 +24,7 @@ public:
 class DisplayObjectTest : public Test {
 public:
     virtual void setUp() override {
-        m_obj = new DisplayObject();
+        m_obj = new Shape();
         stage->addChild(m_obj);
     }
 
@@ -38,7 +39,7 @@ protected:
 class ParentTest : public Test {
 public:
     void setUp() override {
-        m_child = new DisplayObject();
+        m_child = new Shape();
         m_parent = new DisplayObjectContainer();
         m_parent->addChild(m_child);
         stage->addChild(m_parent);

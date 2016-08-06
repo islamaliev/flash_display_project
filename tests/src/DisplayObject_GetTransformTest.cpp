@@ -1,4 +1,5 @@
 #include <Stage.h>
+#include <Shape.h>
 #include "gmock/gmock-matchers.h"
 #include "matrix_asserts.h"
 
@@ -30,7 +31,7 @@ public:
     }
 
     Stage stage;
-    DisplayObject obj;
+    Shape obj;
     DisplayObjectContainer parent;
     DisplayObjectContainer grandParent;
 };

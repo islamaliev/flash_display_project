@@ -1,4 +1,5 @@
 #include <Stage.h>
+#include <Shape.h>
 #include "DisplayObjectContainer.h"
 #include "gmock/gmock-matchers.h"
 
@@ -13,9 +14,9 @@ public:
         cont1.addChild(&obj3);
     }
 
-    DisplayObject obj1;
-    DisplayObject obj2;
-    DisplayObject obj3;
+    Shape obj1;
+    Shape obj2;
+    Shape obj3;
     DisplayObjectContainer cont1;
     DisplayObjectContainer cont2;
     DisplayObjectContainer cont3;
@@ -85,7 +86,7 @@ TEST_F(DisplayObjectContainer_Test, GetChildIndex) {
 
 TEST_F(DisplayObjectContainer_Test, Contains) {
     addChildren();
-    DisplayObject outerObject;
+    Shape outerObject;
     ASSERT_TRUE(cont1.contains(&obj1));
     ASSERT_TRUE(cont1.contains(&obj2));
     ASSERT_TRUE(cont1.contains(&obj3));
@@ -232,8 +233,8 @@ TEST_F(DisplayObjectContainer_Test, WhenChildIsDestroyed_itGetsRemovedFromParent
     cont1.addChild(&obj1);
 
     {
-        DisplayObject tempChild1;
-        DisplayObject tempChild2;
+        Shape tempChild1;
+        Shape tempChild2;
 
         cont1.addChild(&tempChild2);
         cont1.addChildAt(&tempChild1, 0);

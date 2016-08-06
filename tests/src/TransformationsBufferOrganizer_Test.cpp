@@ -4,7 +4,7 @@
 #include "Stage.h"
 #include "RenderState.h"
 #include "StackAllocator.h"
-#include "DisplayObject.h"
+#include "Shape.h"
 #include "Mat4.h"
 #include "matrix_asserts.h"
 
@@ -12,7 +12,7 @@ using namespace testing;
 using namespace flash;
 using namespace render;
 
-using DisplayObject = flash::display::DisplayObject;
+using Shape = flash::display::Shape;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Mat4 = flash::math::Mat4;
 
@@ -66,7 +66,7 @@ TEST_F(TransformationsBufferOrganizer_Test, ifStageIsEmpty_noTransformations) {
 }
 
 TEST_F(TransformationsBufferOrganizer_Test, oneChild) {
-    DisplayObject obj;
+    Shape obj;
     obj.setWidth(37);
     stage.addChild(&obj);
 
@@ -77,9 +77,9 @@ TEST_F(TransformationsBufferOrganizer_Test, oneChild) {
 }
 
 TEST_F(TransformationsBufferOrganizer_Test, twoChildren) {
-    DisplayObject obj1;
+    Shape obj1;
     obj1.setWidth(37);
-    DisplayObject obj2;
+    Shape obj2;
     obj2.setHeight(43);
     stage.addChild(&obj1);
     stage.addChild(&obj2);
@@ -92,7 +92,7 @@ TEST_F(TransformationsBufferOrganizer_Test, twoChildren) {
 }
 
 TEST_F(TransformationsBufferOrganizer_Test, ParentsTransformationIsOverriddenByItsChildsOne) {
-    DisplayObject obj;
+    Shape obj;
     obj.setWidth(37);
     DisplayObjectContainer cont;
     cont.setX(43);
@@ -108,13 +108,13 @@ TEST_F(TransformationsBufferOrganizer_Test, ParentsTransformationIsOverriddenByI
 TEST_F(TransformationsBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
     DisplayObjectContainer cont1;
     cont1.setX(43);
-    DisplayObject obj1;
+    Shape obj1;
     obj1.setWidth(37);
     DisplayObjectContainer cont2;
     cont2.setY(53);
-    DisplayObject obj2;
+    Shape obj2;
     obj2.setHeight(11);
-    DisplayObject obj3;
+    Shape obj3;
     obj3.setScaleX(3);
     stage.addChild(&cont1);
     cont1.addChild(&obj1);
@@ -131,15 +131,15 @@ TEST_F(TransformationsBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePres
 }
 
 TEST_F(TransformationsBufferOrganizer_Test, EmptyParentHasNoEffect) {
-    DisplayObject obj1;
+    Shape obj1;
     obj1.setWidth(37);
     DisplayObjectContainer emptyCont;
     emptyCont.setX(43);
-    DisplayObject obj2;
+    Shape obj2;
     obj2.setHeight(11);
     DisplayObjectContainer cont2;
     cont2.setY(53);
-    DisplayObject obj3;
+    Shape obj3;
     obj3.setScaleX(3);
     stage.addChild(&obj1);
     stage.addChild(&emptyCont);

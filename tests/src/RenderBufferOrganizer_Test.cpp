@@ -21,28 +21,26 @@ namespace {
     const unsigned HEIGHT = 40;
 
     const unsigned ALLOCATOR_SIZE = 10000;
-
-    const unsigned MATRIX_SIZE = sizeof(Mat4);
 }
 
-class TransformationsBufferOrganizer_Test : public Test {
+class RenderBufferOrganizer_Test : public Test {
 public:
-    TransformationsBufferOrganizer_Test()
+    RenderBufferOrganizer_Test()
             : stage(WIDTH, HEIGHT)
             , allocator(ALLOCATOR_SIZE) {}
 
     void run() {
         render::RenderState r;
         stage.preRender(r);
-        Context::TransformationsBufferOrganizer::organize(stage, allocator, bufferData);
+        Context::RenderBufferOrganizer::organize(stage, allocator, bufferData);
     }
 
-    unsigned getNumMatrices() {
-        return bufferData.matricesSize / MATRIX_SIZE;
+    unsigned getNumObjects() {
+        return bufferData.batchSizes[0];
     }
 
     const Mat4& getMatrixAt(unsigned index) {
-        return *(((Mat4*) bufferData.matrices) + index);
+        return *((bufferData.matrices) + index);
     }
 
     display::Stage stage;
@@ -59,24 +57,24 @@ private:
     allocator::StackAllocator allocator;
 };
 
-TEST_F(TransformationsBufferOrganizer_Test, ifStageIsEmpty_noTransformations) {
+TEST_F(RenderBufferOrganizer_Test, ifStageIsEmpty_noTransformations) {
     run();
 
-    ASSERT_THAT(getNumMatrices(), Eq(0));
+    ASSERT_THAT(getNumObjects(), Eq(0));
 }
 
-TEST_F(TransformationsBufferOrganizer_Test, oneChild) {
+TEST_F(RenderBufferOrganizer_Test, oneChild) {
     Shape obj;
     obj.setWidth(37);
     stage.addChild(&obj);
 
     run();
 
-    ASSERT_THAT(getNumMatrices(), Eq(1));
+    ASSERT_THAT(getNumObjects(), Eq(1));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj.getTransform()));
 }
 
-TEST_F(TransformationsBufferOrganizer_Test, twoChildren) {
+TEST_F(RenderBufferOrganizer_Test, twoChildren) {
     Shape obj1;
     obj1.setWidth(37);
     Shape obj2;
@@ -86,12 +84,12 @@ TEST_F(TransformationsBufferOrganizer_Test, twoChildren) {
 
     run();
 
-    ASSERT_THAT(getNumMatrices(), Eq(2));
+    ASSERT_THAT(getNumObjects(), Eq(2));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform()));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform()));
 }
 
-TEST_F(TransformationsBufferOrganizer_Test, ParentsTransformationIsOverriddenByItsChildsOne) {
+TEST_F(RenderBufferOrganizer_Test, ParentsTransformationIsOverriddenByItsChildsOne) {
     Shape obj;
     obj.setWidth(37);
     DisplayObjectContainer cont;
@@ -101,11 +99,11 @@ TEST_F(TransformationsBufferOrganizer_Test, ParentsTransformationIsOverriddenByI
 
     run();
 
-    ASSERT_THAT(getNumMatrices(), Eq(1));
+    ASSERT_THAT(getNumObjects(), Eq(1));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj.getTransform(&stage)));
 }
 
-TEST_F(TransformationsBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
+TEST_F(RenderBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
     DisplayObjectContainer cont1;
     cont1.setX(43);
     Shape obj1;
@@ -124,13 +122,13 @@ TEST_F(TransformationsBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePres
 
     run();
 
-    ASSERT_THAT(getNumMatrices(), Eq(3));
+    ASSERT_THAT(getNumObjects(), Eq(3));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform(&stage)));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform(&stage)));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));
 }
 
-TEST_F(TransformationsBufferOrganizer_Test, EmptyParentHasNoEffect) {
+TEST_F(RenderBufferOrganizer_Test, EmptyParentHasNoEffect) {
     Shape obj1;
     obj1.setWidth(37);
     DisplayObjectContainer emptyCont;
@@ -149,7 +147,7 @@ TEST_F(TransformationsBufferOrganizer_Test, EmptyParentHasNoEffect) {
 
     run();
 
-    ASSERT_THAT(getNumMatrices(), Eq(3));
+    ASSERT_THAT(getNumObjects(), Eq(3));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform(&stage)));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform(&stage)));
     ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));

@@ -4,6 +4,7 @@
 #include "Stage.h"
 #include "RenderState.h"
 #include "StackAllocator.h"
+#include "RenderBufferOrganizer.h"
 #include "Shape.h"
 #include "Mat4.h"
 #include "matrix_asserts.h"
@@ -32,7 +33,7 @@ public:
     void run() {
         render::RenderState r;
         stage.preRender(r);
-        Context::RenderBufferOrganizer::organize(stage, allocator, bufferData);
+        RenderBufferOrganizer::organize(stage, allocator, bufferData);
     }
 
     unsigned getNumObjects() {

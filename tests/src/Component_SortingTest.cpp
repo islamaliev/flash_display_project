@@ -20,8 +20,6 @@ public:
     static const unsigned SPACIAL_SIZE = sizeof(SpatialComponent);
     static const unsigned DEPTH_SIZE = sizeof(int);
 
-    Container* container{nullptr};
-
     void assertSort(const std::vector<int>& expectedOrder) {
         if (expectedOrder.size() > m_entities.size()) {
             FAIL();
@@ -78,7 +76,15 @@ public:
         m_entities.erase(std::remove(m_entities.begin(), m_entities.end(), &e));
         container->removeEntity(e);
     }
+    
+    void setAllValuesForEntity(const Entity& e, int value) {
+        container->getSpatialComponent(e).width = value;
+        container->getDepthComponent(e) = value;
+        container->getTextureData(e).textureId = (unsigned) value;
+    }
 
+    Container* container{nullptr};
+    
 protected:
     void SetUp() override {
         container = new Container(SIZE);
@@ -121,14 +127,13 @@ TEST_F(Component_SortingTest, ComponentsArePreserved_whenTwoElementsSwapped) {
     auto& e1 = createEntity();
     auto& e2 = createEntity();
 
-    container->getSpatialComponent(e1).width = 7;
-    container->getSpatialComponent(e2).width = 11;
-    container->getDepthComponent(e1) = 7;
+    setAllValuesForEntity(e1, 7);
+    setAllValuesForEntity(e2, 11);
     container->getDepthComponent(e2) = 11;
 
     sort({0, 1});
     sort({1, 0});
-
+    
     ASSERT_THAT(container->getSpatialComponent(e1).width, Eq(7));
     ASSERT_THAT(container->getSpatialComponent(e2).width, Eq(11));
     ASSERT_THAT(container->getDepthComponent(e1), Eq(7));
@@ -156,21 +161,19 @@ TEST_F(Component_SortingTest, ForEachWalksThroughInSortedOrder) {
     auto& e2 = createEntity();
     auto& e3 = createEntity();
 
-    container->getSpatialComponent(e1).width = 7;
-    container->getSpatialComponent(e2).width = 11;
-    container->getSpatialComponent(e3).width = 13;
-    container->getDepthComponent(e1) = 7;
-    container->getDepthComponent(e2) = 11;
-    container->getDepthComponent(e3) = 13;
+    setAllValuesForEntity(e1, 7);
+    setAllValuesForEntity(e2, 11);
+    setAllValuesForEntity(e3, 13);
 
     sort({2, 0, 1});
 
     std::vector<int> vals = {11, 13, 7};
     int i = 0;
 
-    container->forEach([&i, &vals](SpatialComponent& comp, int depth) {
+    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth) {
         ASSERT_THAT(comp.width, FloatEq(vals[i]));
         ASSERT_THAT(depth, Eq(vals[i]));
+        ASSERT_THAT(textureData.textureId, Eq(vals[i]));
         ++i;
     });
 
@@ -179,9 +182,10 @@ TEST_F(Component_SortingTest, ForEachWalksThroughInSortedOrder) {
     vals = {7, 11, 13};
     i = 0;
 
-    container->forEach([&i, &vals](SpatialComponent& comp, int depth) {
+    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth) {
         ASSERT_THAT(comp.width, FloatEq(vals[i]));
         ASSERT_THAT(depth, Eq(vals[i]));
+        ASSERT_THAT(textureData.textureId, Eq(vals[i]));
         ++i;
     });
 }
@@ -193,26 +197,22 @@ TEST_F(Component_SortingTest, NegativeOrdersAreInTheEnd) {
     auto& e4 = createEntity();
     auto& e5 = createEntity();
 
-    container->getSpatialComponent(e1).width = 1;
-    container->getSpatialComponent(e2).width = 2;
-    container->getSpatialComponent(e3).width = 3;
-    container->getSpatialComponent(e4).width = 4;
-    container->getSpatialComponent(e5).width = 5;
-    container->getDepthComponent(e1) = 1;
-    container->getDepthComponent(e2) = 2;
-    container->getDepthComponent(e3) = 3;
-    container->getDepthComponent(e4) = 4;
-    container->getDepthComponent(e5) = 5;
+    setAllValuesForEntity(e1, 1);
+    setAllValuesForEntity(e2, 2);
+    setAllValuesForEntity(e3, 3);
+    setAllValuesForEntity(e4, 4);
+    setAllValuesForEntity(e5, 5);
 
     sortAndAssert({0, -1, 1, -1, 2});
 
     std::vector<int> vals = {1, 3, 5};
     int i = 0;
 
-    container->forEach([&i, &vals](SpatialComponent& comp, int depth) {
+    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth) {
         if (i < 3) {
             ASSERT_THAT(comp.width, FloatEq(vals[i]));
             ASSERT_THAT(depth, Eq(vals[i]));
+            ASSERT_THAT(textureData.textureId, Eq(vals[i]));
         }
         ++i;
     });
@@ -224,26 +224,22 @@ TEST_F(Component_SortingTest, afterNegativeIsSetToNormal_dataIsNotHarmed) {
     auto& e3 = createEntity();
     auto& e4 = createEntity();
     auto& e5 = createEntity();
-
-    container->getSpatialComponent(e1).width = 1;
-    container->getSpatialComponent(e2).width = 2;
-    container->getSpatialComponent(e3).width = 3;
-    container->getSpatialComponent(e4).width = 4;
-    container->getSpatialComponent(e5).width = 5;
-    container->getDepthComponent(e1) = 1;
-    container->getDepthComponent(e2) = 2;
-    container->getDepthComponent(e3) = 3;
-    container->getDepthComponent(e4) = 4;
-    container->getDepthComponent(e5) = 5;
+    
+    setAllValuesForEntity(e1, 1);
+    setAllValuesForEntity(e2, 2);
+    setAllValuesForEntity(e3, 3);
+    setAllValuesForEntity(e4, 4);
+    setAllValuesForEntity(e5, 5);
 
     sort({0, -1, 1, -1, 2});
     sort({0, 1, 2, 3, 4});
 
     int i = 1;
 
-    container->forEach([&i](SpatialComponent& comp, int depth) {
+    container->forEach([&i](SpatialComponent& comp, TextureData& textureData, int depth) {
         ASSERT_THAT(comp.width, FloatEq(i));
         ASSERT_THAT(depth, Eq(i));
+        ASSERT_THAT(textureData.textureId, Eq(i));
         ++i;
     });
 }
@@ -258,7 +254,7 @@ TEST_F(Component_SortingTest, ForEachDoesNotWalsThoughtNegativeOrderedComponents
     sort({0, -1, 1, -1, 2});
 
     int i = 0;
-    container->forEach([&i](SpatialComponent& comp, int depth) {
+    container->forEach([&i](SpatialComponent& comp, TextureData& textureData, int depth) {
         ++i;
     });
     ASSERT_THAT(i, Eq(3));

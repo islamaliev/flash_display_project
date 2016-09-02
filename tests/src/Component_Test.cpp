@@ -194,16 +194,34 @@ TEST_F(Component_Test, NewValuesCanBeSavedToUtilizedEntity) {
 
 TEST_F(Component_Test, ForEach) {
     using EntVec = std::vector<std::decay_t<decltype(container->createEntity())>>;
-    EntVec entities  = EntVec(SIZE);
+    EntVec entities = EntVec(SIZE);
     for (int i = 0; i < SIZE; ++i) {
         entities[i] = container->createEntity();
     }
-    auto initValue = container->getSpatialComponent(entities[0]).width;
-    container->forEach([](SpatialComponent& comp, int) {
+    auto initWidth = container->getSpatialComponent(entities[0]).width;
+    auto initTextureId = container->getTextureData(entities[0]).textureId;
+    container->forEach([](SpatialComponent& comp, TextureData& textureData, int) {
         comp.width += 5;
+        textureData.textureId += 5;
     });
     for (int i = 0; i < SIZE; ++i) {
-        ASSERT_THAT(container->getSpatialComponent(entities[0]).width, FloatEq(initValue + 5));
+        ASSERT_THAT(container->getSpatialComponent(entities[i]).width, FloatEq(initWidth + 5));
+        ASSERT_THAT(container->getTextureData(entities[i]).textureId, Eq(initTextureId + 5));
+    }
+}
+
+TEST_F(Component_Test, ForEachTextureData) {
+    using EntVec = std::vector<std::decay_t<decltype(container->createEntity())>>;
+    EntVec entities = EntVec(SIZE);
+    for (int i = 0; i < SIZE; ++i) {
+        entities[i] = container->createEntity();
+    }
+    auto initTextureId = container->getTextureData(entities[0]).textureId;
+    container->forEachTextureData([](TextureData& textureData, int) {
+        textureData.textureId += 5;
+    });
+    for (int i = 0; i < SIZE; ++i) {
+        ASSERT_THAT(container->getTextureData(entities[i]).textureId, Eq(initTextureId + 5));
     }
 }
 

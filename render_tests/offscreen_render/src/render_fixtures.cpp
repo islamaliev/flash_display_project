@@ -333,6 +333,47 @@ class InvisibleAndVisibleImages : public ImageTest {
     }
 };
 
+class ExceedsMaxTextureUnit : public ImageTest {
+    void setUp() override {
+        ImageTest::setUp();
+        Image* image = prepareImage("texture.jpg");
+        image->setWidth(W * 0.3f);
+        image->setHeight(H * 0.5f);
+        
+        Image* image2 = prepareImage("texture2.jpg");
+        image2->setX(W * 0.5f);
+        image2->setY(H * 0.5f);
+        image2->setWidth(W * 0.5f);
+        image2->setHeight(H * 0.5f);
+        
+        Image* image3 = prepareImage("texture3.jpg");
+        image3->setX(W);
+        image3->setWidth(W * 0.3f);
+        image3->setHeight(H * 0.5f);
+        image3->setPivotX(W);
+        
+        Image* image4 = prepareImage("texture4.jpg");
+        image4->setY(H * 0.5f);
+        image4->setWidth(W * 0.5f);
+        image4->setHeight(H * 0.5f);
+        
+        m_displayObject = new Shape();
+        m_displayObject->setX(W * 0.5f);
+        m_displayObject->setWidth(W * 0.4f);
+        m_displayObject->setHeight(H * 0.5f);
+        m_displayObject->setPivotX(W * 0.2f);
+        stage->addChild(m_displayObject);
+    }
+    
+    virtual void tearDown() override {
+        ImageTest::tearDown();
+        delete m_displayObject;
+    }
+
+private:
+    DisplayObject* m_displayObject{nullptr};
+};
+
 void offscreen::initFixtures() {
     stage = new flash::display::Stage(W, H);
     RENDER(SizedChild);
@@ -351,6 +392,7 @@ void offscreen::initFixtures() {
     RENDER(InvisibleObject);
     RENDER(InvisibleParent);
     RENDER(InvisibleAndVisibleImages);
+    RENDER(ExceedsMaxTextureUnit);
 }
 
 void offscreen::clearFixtures() {

@@ -9,6 +9,10 @@
 using namespace offscreen;
 using namespace flash::display;
 
+namespace {
+    const unsigned DEFAULT_SIZE = 20;
+}
+
 class DisplayObjectTest : public Test {
 public:
     virtual void setUp() override {
@@ -183,28 +187,69 @@ public:
     }
 };
 
-class ImageTest : public Test {
+class ObjectsTest : public Test {
 public:
-    void setUp() override {
+    virtual void tearDown() override {
+        for (auto object : m_objects) {
+            delete object;
+        }
     }
 
-    Image* prepareImage(const char* texturePath) {
+protected:
+    Shape* prepareShape(float x = 0, float y = 0, float width = DEFAULT_SIZE, float height = DEFAULT_SIZE, DisplayObjectContainer* parent = nullptr) {
+        Shape* shape = new Shape();
+        shape->setX(x);
+        shape->setY(y);
+        shape->setWidth(width);
+        shape->setHeight(height);
+        if (!parent)
+            parent = stage;
+        parent->addChild(shape);
+        m_objects.push_back(shape);
+        return shape;
+    }
+    
+    DisplayObjectContainer* prepareContainer(float x = 0, float y = 0, DisplayObjectContainer* parent = nullptr) {
+        DisplayObjectContainer* container = new DisplayObjectContainer();
+        container->setX(x);
+        container->setY(y);
+        if (!parent)
+            parent = stage;
+        parent->addChild(container);
+        m_objects.push_back(container);
+        return container;
+    }
+
+private:
+    std::vector<DisplayObject*> m_objects;
+};
+
+class ImageTest : public ObjectsTest {
+public:
+    Image* prepareImage(const char* texturePath, float x = 0, float y = 0, float width = DEFAULT_SIZE, float height = DEFAULT_SIZE, DisplayObjectContainer* parent = nullptr) {
         flash::filesystem::FileLoader loader;
         loader.load(texturePath);
-
+        
         if (loader.size()) {
             Texture* texture = (Texture*) loader.data();
             Image* image = new Image();
             image->setTexture(texture);
-            stage->addChild(image);
+            image->setX(x);
+            image->setY(y);
+            image->setWidth(width);
+            image->setHeight(height);
+            if (!parent)
+                parent = stage;
+            parent->addChild(image);
             m_images.push_back(image);
             m_textures.push_back(texture);
             return image;
         }
         return nullptr;
     }
-
-    virtual void tearDown() override {
+    
+    void tearDown() override {
+        ObjectsTest::tearDown();
         for (auto texture : m_textures) {
             texture->dispose();
         }
@@ -222,11 +267,7 @@ class FullscreenImage: public ImageTest {
 public:
     void setUp() override {
         ImageTest::setUp();
-        Image* image = prepareImage("texture.jpg");
-        image->setX(0);
-        image->setY(0);
-        image->setWidth(W);
-        image->setHeight(H);
+        prepareImage("texture.jpg", 0, 0, W, H);
     }
 };
 
@@ -234,18 +275,9 @@ class ImageAndDisplayObject : public ImageTest {
 public:
     void setUp() override {
         ImageTest::setUp();
-        Image* image = prepareImage("texture.jpg");
-        image->setX(W * 0.1f);
-        image->setY(H * 0.1f);
-        image->setWidth(W * 0.8f);
-        image->setHeight(H * 0.4f);
-
-        m_displayObject = new Shape();
-        m_displayObject->setX(W * 0.1f);
-        m_displayObject->setY(H * 0.6f);
-        m_displayObject->setWidth(W * 0.8f);
-        m_displayObject->setHeight(H * 0.3f);
-        stage->addChild(m_displayObject);
+        
+        prepareImage("texture.jpg", W * 0.1f, H * 0.1f, W * 0.8f, H * 0.4f);
+        prepareShape(W * 0.1f, H * 0.6f, W * 0.8f, H * 0.3f);
     }
 
     virtual void tearDown() override {
@@ -261,17 +293,8 @@ class TwoImages : public ImageTest {
 public:
     void setUp() override {
         ImageTest::setUp();
-        Image* image = prepareImage("texture.jpg");
-        image->setX(0);
-        image->setY(H * 0.5f);
-        image->setWidth(W * 0.5f);
-        image->setHeight(H * 0.5f);
-
-        Image* image2 = prepareImage("texture2.jpg");
-        image2->setX(W * 0.5f);
-        image2->setY(0);
-        image2->setWidth(W * 0.5f);
-        image2->setHeight(H * 0.5f);
+        prepareImage("texture.jpg", 0, H * 0.5f, W * 0.5f, H * 0.5f);
+        prepareImage("texture2.jpg", W * 0.5f, 0, W * 0.5f, H * 0.5f);
     }
 };
 
@@ -320,58 +343,43 @@ class InvisibleParent : public ParentTest {
 class InvisibleAndVisibleImages : public ImageTest {
     void setUp() override {
         ImageTest::setUp();
-        Image* image = prepareImage("texture.jpg");
-        image->setWidth(W * 0.5f);
-        image->setHeight(H * 0.5f);
-        image->setVisible(false);
+        prepareImage("texture.jpg", 0, 0, W * 0.5f, H * 0.5f)->setVisible(false);
 
-        Image* image2 = prepareImage("texture2.jpg");
-        image2->setX(W * 0.5f);
-        image2->setY(H * 0.5f);
-        image2->setWidth(W * 0.5f);
-        image2->setHeight(H * 0.5f);
+        prepareImage("texture2.jpg", W * 0.5f, H * 0.5f, W * 0.5f, H * 0.5f);
     }
 };
 
 class ExceedsMaxTextureUnit : public ImageTest {
     void setUp() override {
         ImageTest::setUp();
-        Image* image = prepareImage("texture.jpg");
-        image->setWidth(W * 0.3f);
-        image->setHeight(H * 0.5f);
         
-        Image* image2 = prepareImage("texture2.jpg");
-        image2->setX(W * 0.5f);
-        image2->setY(H * 0.5f);
-        image2->setWidth(W * 0.5f);
-        image2->setHeight(H * 0.5f);
+        prepareImage("texture.jpg", 0, 0, W * 0.3f, H * 0.5f);
+        prepareImage("texture2.jpg", W * 0.5f, H * 0.5f, W * 0.5f, H * 0.5f);
+        prepareImage("texture3.jpg", W, 0, W * 0.3f, H * 0.5f)->setPivotX(W);
+        prepareImage("texture4.jpg", 0, H * 0.5f, W * 0.5f, H * 0.5f);
         
-        Image* image3 = prepareImage("texture3.jpg");
-        image3->setX(W);
-        image3->setWidth(W * 0.3f);
-        image3->setHeight(H * 0.5f);
-        image3->setPivotX(W);
-        
-        Image* image4 = prepareImage("texture4.jpg");
-        image4->setY(H * 0.5f);
-        image4->setWidth(W * 0.5f);
-        image4->setHeight(H * 0.5f);
-        
-        m_displayObject = new Shape();
-        m_displayObject->setX(W * 0.5f);
-        m_displayObject->setWidth(W * 0.4f);
-        m_displayObject->setHeight(H * 0.5f);
-        m_displayObject->setPivotX(W * 0.2f);
-        stage->addChild(m_displayObject);
+        prepareShape(W * 0.5f, 0, W * 0.4f, H * 0.5f)->setPivotX(W * 0.2f);
     }
-    
-    virtual void tearDown() override {
-        ImageTest::tearDown();
-        delete m_displayObject;
-    }
+};
 
-private:
-    DisplayObject* m_displayObject{nullptr};
+class DepthSorting : public ImageTest {
+public:
+    void setUp() override {
+        ImageTest::setUp();
+        
+        Image* image1 = prepareImage("texture.jpg",  W * 0.6f, H * 0.6f, W * 0.4f, H * 0.4f);
+        Image* image2 = prepareImage("texture2.jpg", W * 0.2f, H * 0.2f, W * 0.4f, H * 0.4f);
+        Image* image3 = prepareImage("texture3.jpg", W * 0.8f, H * 0.8f, W * 0.2f, H * 0.2f);
+        Image* image4 = prepareImage("texture4.jpg", W * 0.0f, H * 0.0f, W * 0.4f, H * 0.4f);
+        
+        Shape* shape = prepareShape(W * 0.4f, H * 0.4f, W * 0.4f, H * 0.4f);
+        
+        stage->addChild(image4);
+        stage->addChild(image2);
+        stage->addChild(shape);
+        stage->addChild(image1);
+        stage->addChild(image3);
+    }
 };
 
 void offscreen::initFixtures() {
@@ -393,6 +401,7 @@ void offscreen::initFixtures() {
     RENDER(InvisibleParent);
     RENDER(InvisibleAndVisibleImages);
     RENDER(ExceedsMaxTextureUnit);
+    RENDER(DepthSorting);
 }
 
 void offscreen::clearFixtures() {

@@ -200,7 +200,7 @@ TEST_F(Component_Test, ForEach) {
     }
     auto initWidth = container->getSpatialComponent(entities[0]).width;
     auto initTextureId = container->getTextureData(entities[0]).textureId;
-    container->forEach([](SpatialComponent& comp, TextureData& textureData, int) {
+    container->forEach([](SpatialComponent& comp, TextureData& textureData, int, int) {
         comp.width += 5;
         textureData.textureId += 5;
     });

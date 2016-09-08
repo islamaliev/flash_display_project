@@ -170,7 +170,7 @@ TEST_F(Component_SortingTest, ForEachWalksThroughInSortedOrder) {
     std::vector<int> vals = {11, 13, 7};
     int i = 0;
 
-    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth) {
+    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth, int) {
         ASSERT_THAT(comp.width, FloatEq(vals[i]));
         ASSERT_THAT(depth, Eq(vals[i]));
         ASSERT_THAT(textureData.textureId, Eq(vals[i]));
@@ -182,7 +182,7 @@ TEST_F(Component_SortingTest, ForEachWalksThroughInSortedOrder) {
     vals = {7, 11, 13};
     i = 0;
 
-    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth) {
+    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth, int) {
         ASSERT_THAT(comp.width, FloatEq(vals[i]));
         ASSERT_THAT(depth, Eq(vals[i]));
         ASSERT_THAT(textureData.textureId, Eq(vals[i]));
@@ -208,7 +208,7 @@ TEST_F(Component_SortingTest, NegativeOrdersAreInTheEnd) {
     std::vector<int> vals = {1, 3, 5};
     int i = 0;
 
-    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth) {
+    container->forEach([&i, &vals](SpatialComponent& comp, TextureData& textureData, int depth, int) {
         if (i < 3) {
             ASSERT_THAT(comp.width, FloatEq(vals[i]));
             ASSERT_THAT(depth, Eq(vals[i]));
@@ -236,7 +236,7 @@ TEST_F(Component_SortingTest, afterNegativeIsSetToNormal_dataIsNotHarmed) {
 
     int i = 1;
 
-    container->forEach([&i](SpatialComponent& comp, TextureData& textureData, int depth) {
+    container->forEach([&i](SpatialComponent& comp, TextureData& textureData, int depth, int) {
         ASSERT_THAT(comp.width, FloatEq(i));
         ASSERT_THAT(depth, Eq(i));
         ASSERT_THAT(textureData.textureId, Eq(i));
@@ -254,7 +254,7 @@ TEST_F(Component_SortingTest, ForEachDoesNotWalsThoughtNegativeOrderedComponents
     sort({0, -1, 1, -1, 2});
 
     int i = 0;
-    container->forEach([&i](SpatialComponent& comp, TextureData& textureData, int depth) {
+    container->forEach([&i](SpatialComponent& comp, TextureData& textureData, int depth, int) {
         ++i;
     });
     ASSERT_THAT(i, Eq(3));

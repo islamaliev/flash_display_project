@@ -43,6 +43,11 @@ public:
     const Mat4& getMatrixAt(unsigned index) {
         return *((bufferData.matrices) + index);
     }
+    
+    Mat4 ignoreZ(Mat4 m) {
+        m.zt(0);
+        return m;
+    }
 
     display::Stage stage;
 
@@ -72,7 +77,7 @@ TEST_F(RenderBufferOrganizer_Test, oneChild) {
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(1));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj.getTransform()));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj.getTransform()));
 }
 
 TEST_F(RenderBufferOrganizer_Test, twoChildren) {
@@ -86,8 +91,8 @@ TEST_F(RenderBufferOrganizer_Test, twoChildren) {
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(2));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform()));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform()));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform()));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform()));
 }
 
 TEST_F(RenderBufferOrganizer_Test, ParentsTransformationIsOverriddenByItsChildsOne) {
@@ -101,7 +106,7 @@ TEST_F(RenderBufferOrganizer_Test, ParentsTransformationIsOverriddenByItsChildsO
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(1));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj.getTransform(&stage)));
 }
 
 TEST_F(RenderBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
@@ -124,9 +129,9 @@ TEST_F(RenderBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(3));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(2)), obj3.getTransform(&stage)));
 }
 
 TEST_F(RenderBufferOrganizer_Test, EmptyParentHasNoEffect) {
@@ -149,7 +154,7 @@ TEST_F(RenderBufferOrganizer_Test, EmptyParentHasNoEffect) {
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(3));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(0), obj1.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(1), obj2.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(getMatrixAt(2), obj3.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(2)), obj3.getTransform(&stage)));
 }

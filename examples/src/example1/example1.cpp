@@ -149,48 +149,39 @@ class DepthSortingWithMovedTree : public ImageTest {
     void setUp() override {
         ImageTest::setUp();
         
-//        DisplayObjectContainer* cont = prepareContainer();
-        DisplayObjectContainer* cont = stage;
+        DisplayObjectContainer* cont = prepareContainer();
         DisplayObjectContainer* blueRect = prepareRect("blue.jpg", 0, 0, cont);
         DisplayObjectContainer* greenRect = prepareRect("green.jpg", W * 0.05f, H * 0.05f, cont);
         DisplayObjectContainer* yellowRect = prepareRect("yellow.jpg", W * 0.1f, H * 0.1f, cont);
         DisplayObjectContainer* magentaRect = prepareRect("magenta.jpg", W * 0.15f, H * 0.15f, cont);
         DisplayObjectContainer* whiteRect = prepareRect("white.jpg", W * 0.2f, H * 0.2f, cont);
     
-        auto shape1 = prepareShape(W * 0.4f, H * 0.4f, W * 0.05f, H * 0.7f);
-        auto shape2 = prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        /*prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);
-        prepareShape(W * 0.4f, H * 0.4f, W * 0.7f, H * 0.05f);*/
+        auto tlh = prepareShape(0, H * 0.5f, W * 0.4f, H * 0.05f);
+        auto tlv = prepareShape(W * 0.35f, H * 0.5f, W * 0.05f, H * 0.5f);
+        
+        auto brh = prepareShape(W * 0.5f, H * 0.35f, W * 0.5f, H * 0.05f);
+        auto brv = prepareShape(W * 0.5f, 0, W * 0.05f, H * 0.4f);
     
-        /*stage->addChild(cont);
-//        cont->addChild(shape1);
-//        cont->addChild(shape2);
-        cont->addChild(blueRect);
-        cont->addChild(greenRect);
-        cont->addChild(yellowRect);
-        cont->addChild(magentaRect);
-        cont->addChild(whiteRect);*/
-    
-        /*cont->addChild(greenRect);
-        cont->addChild(shape1);
-        cont->addChild(shape2);
-        cont->addChild(magentaRect);
-        cont->addChildAt(yellowRect, 1);
-        cont->addChild(whiteRect);
+        auto trh = prepareShape(W * 0.5f, H * 0.5f, W * 0.5f, H * 0.05f);
+        auto trv = prepareShape(W * 0.5f, H * 0.5f, W * 0.05f, H * 0.5f);
+        
+        auto blh = prepareShape(0, H * 0.35f, W * 0.4f, H * 0.05f);
+        auto blv = prepareShape(W * 0.35f, 0, W * 0.05f, H * 0.4f);
+        
+        stage->addChild(blueRect);
         stage->addChild(cont);
-        stage->addChildAt(blueRect, 0);*/
+        cont->addChild(greenRect);
+        cont->addChild(tlh);
+        cont->addChild(tlv);
+        cont->addChild(yellowRect);
+        cont->addChild(trh);
+        cont->addChild(trv);
+        cont->addChild(magentaRect);
+        cont->addChild(blh);
+        cont->addChild(blv);
+        cont->addChild(whiteRect);
+        cont->addChild(brh);
+        cont->addChild(brv);
     }
     
     DisplayObjectContainer* prepareRect(const char* texturePath, float x = 0, float y = 0, DisplayObjectContainer* parent = nullptr) {
@@ -203,7 +194,6 @@ class DepthSortingWithMovedTree : public ImageTest {
     
         return container;
     }
-    
 };
 
 class InvisibleAndVisibleImages : public ImageTest {

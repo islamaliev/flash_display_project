@@ -37,7 +37,8 @@ public:
     }
 
     unsigned getNumObjects() {
-        return bufferData.batchSizes[0];
+        // we need to subtract 1 because of the hack explained in RenderBufferOrganizer
+        return bufferData.batchSizes[0] - 1;
     }
 
     const Mat4& getMatrixAt(unsigned index) {

@@ -20,7 +20,7 @@ public:
     Mat4 getTransform(float x, float y, float scaleX, float scaleY) {
         Mat4 m;
         m.translate(x, y, 0);
-        m.scale(scaleX, scaleY, 0);
+        m.scale(scaleX, scaleY, 1);
         return m;
     }
 

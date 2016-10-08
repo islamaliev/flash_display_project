@@ -267,7 +267,7 @@ class FullscreenImage: public ImageTest {
 public:
     void setUp() override {
         ImageTest::setUp();
-        prepareImage("texture.jpg", 0, 0, W, H);
+        prepareImage("texture1.jpg", 0, 0, W, H);
     }
 };
 
@@ -276,7 +276,7 @@ public:
     void setUp() override {
         ImageTest::setUp();
         
-        prepareImage("texture.jpg", W * 0.1f, H * 0.1f, W * 0.8f, H * 0.4f);
+        prepareImage("texture1.jpg", W * 0.1f, H * 0.1f, W * 0.8f, H * 0.4f);
         prepareShape(W * 0.1f, H * 0.6f, W * 0.8f, H * 0.3f);
     }
 
@@ -293,7 +293,7 @@ class TwoImages : public ImageTest {
 public:
     void setUp() override {
         ImageTest::setUp();
-        prepareImage("texture.jpg", 0, H * 0.5f, W * 0.5f, H * 0.5f);
+        prepareImage("texture1.jpg", 0, H * 0.5f, W * 0.5f, H * 0.5f);
         prepareImage("texture2.jpg", W * 0.5f, 0, W * 0.5f, H * 0.5f);
     }
 };
@@ -343,7 +343,7 @@ class InvisibleParent : public ParentTest {
 class InvisibleAndVisibleImages : public ImageTest {
     void setUp() override {
         ImageTest::setUp();
-        prepareImage("texture.jpg", 0, 0, W * 0.5f, H * 0.5f)->setVisible(false);
+        prepareImage("texture1.jpg", 0, 0, W * 0.5f, H * 0.5f)->setVisible(false);
 
         prepareImage("texture2.jpg", W * 0.5f, H * 0.5f, W * 0.5f, H * 0.5f);
     }
@@ -353,7 +353,7 @@ class ExceedsMaxTextureUnit : public ImageTest {
     void setUp() override {
         ImageTest::setUp();
         
-        prepareImage("texture.jpg", 0, 0, W * 0.3f, H * 0.5f);
+        prepareImage("texture1.jpg", 0, 0, W * 0.3f, H * 0.5f);
         prepareImage("texture2.jpg", W * 0.5f, H * 0.5f, W * 0.5f, H * 0.5f);
         prepareImage("texture3.jpg", W, 0, W * 0.3f, H * 0.5f)->setPivotX(W);
         prepareImage("texture4.jpg", 0, H * 0.5f, W * 0.5f, H * 0.5f);
@@ -367,7 +367,7 @@ public:
     void setUp() override {
         ImageTest::setUp();
         
-        Image* image1 = prepareImage("texture.jpg",  W * 0.6f, H * 0.6f, W * 0.4f, H * 0.4f);
+        Image* image1 = prepareImage("texture1.jpg",  W * 0.6f, H * 0.6f, W * 0.4f, H * 0.4f);
         Image* image2 = prepareImage("texture2.jpg", W * 0.2f, H * 0.2f, W * 0.4f, H * 0.4f);
         Image* image3 = prepareImage("texture3.jpg", W * 0.8f, H * 0.8f, W * 0.2f, H * 0.2f);
         Image* image4 = prepareImage("texture4.jpg", W * 0.0f, H * 0.0f, W * 0.4f, H * 0.4f);
@@ -379,6 +379,57 @@ public:
         stage->addChild(shape);
         stage->addChild(image1);
         stage->addChild(image3);
+    }
+};
+
+class DepthSortingWithMovedTree : public ImageTest {
+    void setUp() override {
+        ImageTest::setUp();
+        
+        DisplayObjectContainer* cont = prepareContainer();
+        DisplayObjectContainer* blueRect = prepareRect("blue.jpg", 0, 0, cont);
+        DisplayObjectContainer* greenRect = prepareRect("green.jpg", W * 0.05f, H * 0.05f, cont);
+        DisplayObjectContainer* yellowRect = prepareRect("yellow.jpg", W * 0.1f, H * 0.1f, cont);
+        DisplayObjectContainer* magentaRect = prepareRect("magenta.jpg", W * 0.15f, H * 0.15f, cont);
+        DisplayObjectContainer* whiteRect = prepareRect("white.jpg", W * 0.2f, H * 0.2f, cont);
+        
+        auto tlh = prepareShape(0, H * 0.5f, W * 0.4f, H * 0.05f);
+        auto tlv = prepareShape(W * 0.35f, H * 0.5f, W * 0.05f, H * 0.5f);
+        
+        auto brh = prepareShape(W * 0.5f, H * 0.35f, W * 0.5f, H * 0.05f);
+        auto brv = prepareShape(W * 0.5f, 0, W * 0.05f, H * 0.4f);
+        
+        auto trh = prepareShape(W * 0.5f, H * 0.5f, W * 0.5f, H * 0.05f);
+        auto trv = prepareShape(W * 0.5f, H * 0.5f, W * 0.05f, H * 0.5f);
+        
+        auto blh = prepareShape(0, H * 0.35f, W * 0.4f, H * 0.05f);
+        auto blv = prepareShape(W * 0.35f, 0, W * 0.05f, H * 0.4f);
+        
+        stage->addChild(blueRect);
+        stage->addChild(cont);
+        cont->addChild(greenRect);
+        cont->addChild(tlh);
+        cont->addChild(tlv);
+        cont->addChild(yellowRect);
+        cont->addChild(trh);
+        cont->addChild(trv);
+        cont->addChild(magentaRect);
+        cont->addChild(blh);
+        cont->addChild(blv);
+        cont->addChild(whiteRect);
+        cont->addChild(brh);
+        cont->addChild(brv);
+    }
+    
+    DisplayObjectContainer* prepareRect(const char* texturePath, float x = 0, float y = 0, DisplayObjectContainer* parent = nullptr) {
+        DisplayObjectContainer* container = prepareContainer(x, y, parent);
+        
+        prepareImage(texturePath, 0, 0, W * 0.05f, H * 0.7f, container);
+        prepareImage(texturePath, 0, 0, W * 0.7f, H * 0.05f, container);
+        prepareImage(texturePath, W * 0.65f, 0, W * 0.05f, H * 0.7f, container);
+        prepareImage(texturePath, 0, H * 0.65f, W * 0.7f, H * 0.05f, container);
+        
+        return container;
     }
 };
 
@@ -402,6 +453,7 @@ void offscreen::initFixtures() {
     RENDER(InvisibleAndVisibleImages);
     RENDER(ExceedsMaxTextureUnit);
     RENDER(DepthSorting);
+    RENDER(DepthSortingWithMovedTree);
 }
 
 void offscreen::clearFixtures() {

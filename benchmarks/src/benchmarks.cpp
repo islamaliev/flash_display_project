@@ -141,7 +141,7 @@ void benchmarkFlatTree() {
 void benchmarkNormalTree() {
     FrameCounterStage stage;
     stage.init();
-    stage.setNumFrames(50);
+    stage.setNumFrames(100);
     std::cout << "----------------------------------" << std::endl;
     std::cout << "normal tree" << std::endl;
 
@@ -182,7 +182,7 @@ void benchmarkNormalTree() {
 void benchmarkNormalTreeWithInvisibleNodes() {
     FrameCounterStage stage;
     stage.init();
-    stage.setNumFrames(50);
+    stage.setNumFrames(100);
     std::cout << "----------------------------------" << std::endl;
     std::cout << "normal tree with invisible nodes" << std::endl;
 

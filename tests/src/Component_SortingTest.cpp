@@ -80,7 +80,7 @@ public:
     void setAllValuesForEntity(const Entity& e, int value) {
         container->getSpatialComponent(e).width = value;
         container->getDepthComponent(e) = value;
-        container->getTextureData(e).textureId = (unsigned) value;
+        container->getTextureData(e).textureId = value;
     }
 
     Container* container{nullptr};

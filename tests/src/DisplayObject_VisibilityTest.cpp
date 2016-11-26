@@ -1,28 +1,21 @@
-#include <Shape.h>
-#include "gmock/gmock-matchers.h"
-#include "Stage.h"
+#include "Shape.h"
 #include "RenderState.h"
+#include "StageBasedTest.h"
 
-using namespace testing;
 using Shape = flash::display::Shape;
 using DisplayObjectContainer = flash::display::DisplayObjectContainer;
-using Stage = flash::display::Stage;
 
-class DisplayObject_VisibilityTest : public testing::Test {
+class DisplayObject_VisibilityTest : public StageBasedTest {
 public:
-    DisplayObject_VisibilityTest()
-            : stage(100, 100) {};
-
     void updateStageOrder() {
         flash::render::RenderState r;
-        stage.preRender(r);
+        stage().preRender(r);
     }
 
     Shape obj1;
     Shape obj2;
     DisplayObjectContainer cont1;
     DisplayObjectContainer cont2;
-    Stage stage;
 };
 
 TEST_F(DisplayObject_VisibilityTest, SetGet) {
@@ -40,7 +33,7 @@ TEST_F(DisplayObject_VisibilityTest, ParentsVisibilityHasNoImpactOnChilsOne) {
 }
 
 TEST_F(DisplayObject_VisibilityTest, ifInvisible_orderIsReset) {
-    stage.addChild(&obj1);
+    stage().addChild(&obj1);
     updateStageOrder();
     ASSERT_THAT(obj1.orderIndex(), Not(-1));
 
@@ -51,7 +44,7 @@ TEST_F(DisplayObject_VisibilityTest, ifInvisible_orderIsReset) {
 }
 
 TEST_F(DisplayObject_VisibilityTest, ifContainerInvisible_allChildrensOrderIsReset) {
-    stage.addChild(&cont1);
+    stage().addChild(&cont1);
     cont1.addChild(&cont2);
     cont2.addChild(&obj1);
     cont2.addChild(&obj2);
@@ -71,26 +64,26 @@ TEST_F(DisplayObject_VisibilityTest, ifContainerInvisible_allChildrensOrderIsRes
 }
 
 TEST_F(DisplayObject_VisibilityTest, ifInvisible_siblingTakesItsOrder) {
-    stage.addChild(&cont1);
+    stage().addChild(&cont1);
     cont1.addChild(&cont2);
-    stage.addChild(&obj1);
-    stage.addChild(&obj2);
+    stage().addChild(&obj1);
+    stage().addChild(&obj2);
     updateStageOrder();
-    ASSERT_THAT(obj1.orderIndex(), Not(stage.orderIndex() + 1));
+    ASSERT_THAT(obj1.orderIndex(), Not(stage().orderIndex() + 1));
 
     cont1.setVisible(false);
     cont2.setVisible(false);
     obj2.setVisible(false);
 
     updateStageOrder();
-    ASSERT_THAT(obj1.orderIndex(), Eq(stage.orderIndex() + 1));
+    ASSERT_THAT(obj1.orderIndex(), Eq(stage().orderIndex() + 1));
 }
 
 TEST_F(DisplayObject_VisibilityTest, ifVisible_orderIsRestored) {
-    stage.addChild(&cont1);
+    stage().addChild(&cont1);
     cont1.addChild(&cont2);
-    stage.addChild(&obj1);
-    stage.addChild(&obj2);
+    stage().addChild(&obj1);
+    stage().addChild(&obj2);
     updateStageOrder();
 
     int orderCont1 = cont1.orderIndex();

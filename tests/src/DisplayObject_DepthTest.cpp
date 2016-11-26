@@ -1,23 +1,13 @@
-#include <Stage.h>
-#include <Shape.h>
+#include "Shape.h"
 #include "DisplayObjectContainer.h"
-#include "gmock/gmock-matchers.h"
+#include "StageBasedTest.h"
 
-using namespace testing;
 using namespace flash::display;
 
-namespace {
-    const unsigned WIDTH = 40;
-    const unsigned HEIGHT = 20;
-}
-
-class DisplayObject_DepthTest : public Test {
+class DisplayObject_DepthTest : public StageBasedTest {
 public:
-    DisplayObject_DepthTest()
-            : stage(WIDTH, HEIGHT) {}
-
     void makeHierarchy() {
-        stage.addChild(&cont1);
+        stage().addChild(&cont1);
         cont1.addChild(&cont2);
         cont2.addChild(&cont3);
         cont3.addChild(&obj1);
@@ -25,7 +15,6 @@ public:
         cont3.addChild(&obj3);
     }
 
-    Stage stage;
     Shape obj1;
     Shape obj2;
     Shape obj3;
@@ -39,18 +28,18 @@ TEST_F(DisplayObject_DepthTest, Invalid_ifNotOnStage) {
 }
 
 TEST_F(DisplayObject_DepthTest, StageHasDepthZero) {
-    ASSERT_THAT(stage.depth(), Eq(0));
+    ASSERT_THAT(stage().depth(), Eq(0));
 }
 
 TEST_F(DisplayObject_DepthTest, StageChildHasDepthOne) {
-    stage.addChild(&obj1);
+    stage().addChild(&obj1);
     ASSERT_THAT(obj1.depth(), Eq(1));
-    stage.addChildAt(&obj2, 0);
+    stage().addChildAt(&obj2, 0);
     ASSERT_THAT(obj2.depth(), Eq(1));
 }
 
 TEST_F(DisplayObject_DepthTest, EachNestedChildIncresesDepth) {
-    stage.addChild(&cont1);
+    stage().addChild(&cont1);
     cont1.addChild(&cont2);
     cont2.addChild(&cont3);
     cont3.addChild(&obj1);
@@ -72,15 +61,15 @@ TEST_F(DisplayObject_DepthTest, NestedChildHasInvalidDepth_ifParentIsNotOnStage)
 }
 
 TEST_F(DisplayObject_DepthTest, DepthGetsInvalidated_ifRemoved) {
-    stage.addChild(&obj1);
-    stage.addChild(&obj2);
-    stage.addChild(&obj3);
+    stage().addChild(&obj1);
+    stage().addChild(&obj2);
+    stage().addChild(&obj3);
     ASSERT_THAT(obj1.depth(), Not(-1));
     ASSERT_THAT(obj2.depth(), Not(-1));
     ASSERT_THAT(obj3.depth(), Not(-1));
-    stage.removeChild(&obj1);
-    stage.removeChildAt(0);
-    stage.removeChildren();
+    stage().removeChild(&obj1);
+    stage().removeChildAt(0);
+    stage().removeChildren();
     ASSERT_THAT(obj1.depth(), Eq(-1));
     ASSERT_THAT(obj2.depth(), Eq(-1));
     ASSERT_THAT(obj3.depth(), Eq(-1));
@@ -141,7 +130,7 @@ TEST_F(DisplayObject_DepthTest, AllDescendantsGetProperDepth_ifTreeAdded) {
     ASSERT_THAT(cont2.depth(), Eq(-1));
     ASSERT_THAT(obj1.depth(), Eq(-1));
 
-    stage.addChild(&cont1);
+    stage().addChild(&cont1);
 
     ASSERT_THAT(cont1.depth(), Eq(1));
     ASSERT_THAT(cont2.depth(), Eq(2));
@@ -170,7 +159,7 @@ TEST_F(DisplayObject_DepthTest, AllDescendantsGetProperDepth_ifTreeMoved) {
     ASSERT_THAT(obj2.depth(), Eq(4));
     ASSERT_THAT(obj3.depth(), Eq(4));
 
-    stage.addChild(&cont2);
+    stage().addChild(&cont2);
 
     ASSERT_THAT(cont1.depth(), Eq(1));
     ASSERT_THAT(cont2.depth(), Eq(1));

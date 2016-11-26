@@ -1,15 +1,12 @@
-#include "gmock/gmock-matchers.h"
 #include "ComponentContainer.h"
 #include "Contex.h"
-#include "Stage.h"
 #include "RenderState.h"
 #include "StackAllocator.h"
 #include "RenderBufferOrganizer.h"
 #include "Shape.h"
-#include "Mat4.h"
 #include "matrix_asserts.h"
+#include "StageBasedTest.h"
 
-using namespace testing;
 using namespace flash;
 using namespace render;
 
@@ -18,22 +15,18 @@ using DisplayObjectContainer = flash::display::DisplayObjectContainer;
 using Mat4 = flash::math::Mat4;
 
 namespace {
-    const unsigned WIDTH = 40;
-    const unsigned HEIGHT = 40;
-
     const unsigned ALLOCATOR_SIZE = 10000;
 }
 
-class RenderBufferOrganizer_Test : public Test {
+class RenderBufferOrganizer_Test : public StageBasedTest {
 public:
     RenderBufferOrganizer_Test()
-            : stage(WIDTH, HEIGHT)
-            , allocator(ALLOCATOR_SIZE) {}
+            : allocator(ALLOCATOR_SIZE) {}
 
     void run() {
         render::RenderState r;
-        stage.preRender(r);
-        RenderBufferOrganizer::organize(stage, allocator, bufferData);
+        stage().preRender(r);
+        RenderBufferOrganizer::organize(stage(), allocator, bufferData);
     }
 
     unsigned getNumObjects() {
@@ -47,15 +40,6 @@ public:
     Mat4 ignoreZ(Mat4 m) {
         m.zt(0);
         return m;
-    }
-
-    display::Stage stage;
-
-protected:
-    void SetUp() override {
-    }
-
-    void TearDown() override {
     }
 
 private:
@@ -72,7 +56,7 @@ TEST_F(RenderBufferOrganizer_Test, ifStageIsEmpty_noTransformations) {
 TEST_F(RenderBufferOrganizer_Test, oneChild) {
     Shape obj;
     obj.setWidth(37);
-    stage.addChild(&obj);
+    stage().addChild(&obj);
 
     run();
 
@@ -85,8 +69,8 @@ TEST_F(RenderBufferOrganizer_Test, twoChildren) {
     obj1.setWidth(37);
     Shape obj2;
     obj2.setHeight(43);
-    stage.addChild(&obj1);
-    stage.addChild(&obj2);
+    stage().addChild(&obj1);
+    stage().addChild(&obj2);
 
     run();
 
@@ -100,13 +84,13 @@ TEST_F(RenderBufferOrganizer_Test, ParentsTransformationIsOverriddenByItsChildsO
     obj.setWidth(37);
     DisplayObjectContainer cont;
     cont.setX(43);
-    stage.addChild(&cont);
+    stage().addChild(&cont);
     cont.addChild(&obj);
 
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(1));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj.getTransform(&stage())));
 }
 
 TEST_F(RenderBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
@@ -120,7 +104,7 @@ TEST_F(RenderBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
     obj2.setHeight(11);
     Shape obj3;
     obj3.setScaleX(3);
-    stage.addChild(&cont1);
+    stage().addChild(&cont1);
     cont1.addChild(&obj1);
     cont1.addChild(&cont2);
     cont2.addChild(&obj2);
@@ -129,9 +113,9 @@ TEST_F(RenderBufferOrganizer_Test, OnlyTransformationOfLeanNodesArePresent) {
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(3));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(2)), obj3.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform(&stage())));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform(&stage())));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(2)), obj3.getTransform(&stage())));
 }
 
 TEST_F(RenderBufferOrganizer_Test, EmptyParentHasNoEffect) {
@@ -145,16 +129,16 @@ TEST_F(RenderBufferOrganizer_Test, EmptyParentHasNoEffect) {
     cont2.setY(53);
     Shape obj3;
     obj3.setScaleX(3);
-    stage.addChild(&obj1);
-    stage.addChild(&emptyCont);
-    stage.addChild(&obj2);
-    stage.addChild(&cont2);
+    stage().addChild(&obj1);
+    stage().addChild(&emptyCont);
+    stage().addChild(&obj2);
+    stage().addChild(&cont2);
     cont2.addChild(&obj3);
 
     run();
 
     ASSERT_THAT(getNumObjects(), Eq(3));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform(&stage)));
-    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(2)), obj3.getTransform(&stage)));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(0)), obj1.getTransform(&stage())));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(1)), obj2.getTransform(&stage())));
+    ASSERT_TRUE(MatrixEQ(ignoreZ(getMatrixAt(2)), obj3.getTransform(&stage())));
 }

@@ -1,22 +1,12 @@
-#include <Stage.h>
-#include <Shape.h>
-#include "gmock/gmock-matchers.h"
+#include "Shape.h"
 #include "matrix_asserts.h"
+#include "StageBasedTest.h"
 
-using namespace testing;
 using namespace flash::display;
 using Mat4 = flash::math::Mat4;
 
-namespace {
-    const unsigned WIDTH = 40;
-    const unsigned HEIGHT = 20;
-}
-
-class DisplayObject_GetTransformTest : public Test {
+class DisplayObject_GetTransformTest : public StageBasedTest {
 public:
-    DisplayObject_GetTransformTest()
-            : stage(WIDTH, HEIGHT) {}
-
     Mat4 getTransform(float x, float y, float scaleX, float scaleY) {
         Mat4 m;
         m.translate(x, y, 0);
@@ -25,12 +15,11 @@ public:
     }
 
     void makeHierarchy() {
-        stage.addChild(&grandParent);
+        stage().addChild(&grandParent);
         grandParent.addChild(&parent);
         parent.addChild(&obj);
     }
 
-    Stage stage;
     Shape obj;
     DisplayObjectContainer parent;
     DisplayObjectContainer grandParent;
@@ -39,7 +28,7 @@ public:
 TEST_F(DisplayObject_GetTransformTest, ObjectReturnsIdentity) {
     ASSERT_THAT(obj.treeSize(), Eq(1));
     ASSERT_THAT(parent.treeSize(), Eq(1));
-    ASSERT_THAT(stage.treeSize(), Eq(1));
+    ASSERT_THAT(stage().treeSize(), Eq(1));
 }
 
 TEST_F(DisplayObject_GetTransformTest, ForPositionAndScale) {
@@ -85,5 +74,5 @@ TEST_F(DisplayObject_GetTransformTest, ReturnsInGrandParentsSpace_ifGrandParentG
     obj.setHeight(41);
     obj.setX(5);
     ASSERT_TRUE(MatrixEQ(obj.getTransform(&grandParent), getTransform(obj.x() + parent.x(), obj.y() + parent.y(), 37, 41)));
-    ASSERT_TRUE(MatrixEQ(obj.getTransform(&stage), getTransform(obj.x() + parent.x() + grandParent.x(), obj.y() + parent.y() + grandParent.y(), 37, 41)));
+    ASSERT_TRUE(MatrixEQ(obj.getTransform(&stage()), getTransform(obj.x() + parent.x() + grandParent.x(), obj.y() + parent.y() + grandParent.y(), 37, 41)));
 }

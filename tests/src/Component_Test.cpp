@@ -8,7 +8,7 @@ using Container = ComponentContainer;
 
 class Component_Test : public Test {
 public:
-    static const unsigned SIZE = 4;
+    static const unsigned SIZE = 10;
 
     Container* container{nullptr};
 
@@ -37,7 +37,7 @@ TEST_F(Component_Test, EachCreateEntityGivesDifferentResult) {
     ASSERT_THAT(i1, Not(i2));
 }
 
-TEST_F(Component_Test, AddComponentReturnsSameObj_ifSameEntityGiven) {
+TEST_F(Component_Test, GetComponentReturnsSameObj_ifSameEntityGiven) {
     const auto& i1 = container->createEntity();
     const auto& i2 = container->createEntity();
     auto& c1 = container->getSpatialComponent(i1);
@@ -65,76 +65,63 @@ TEST_F(Component_Test, NewEntityDoesNotFail_ifOldOnesAreRemoved) {
 }
 
 TEST_F(Component_Test, RemoveEntityDoesNotAlterOthers) {
-    // create entitis
+    // create entities
     const auto& e1 = container->createEntity();
     const auto& e2 = container->createEntity();
     const auto& e3 = container->createEntity();
     const auto& e4 = container->createEntity();
+    const auto& e5 = container->createEntity();
 
-    // get all components for all entities
-    auto& spacial1 = container->getSpatialComponent(e1);
-    auto& spacial2 = container->getSpatialComponent(e2);
-    auto& spacial3 = container->getSpatialComponent(e3);
-    auto& spacial4 = container->getSpatialComponent(e4);
-    auto& depth1 = container->getDepthComponent(e1);
-    auto& depth2 = container->getDepthComponent(e2);
-    auto& depth3 = container->getDepthComponent(e3);
-    auto& depth4 = container->getDepthComponent(e4);
-    auto& order1 = container->getOrderComponent(e1);
-    auto& order2 = container->getOrderComponent(e2);
-    auto& order3 = container->getOrderComponent(e3);
-    auto& order4 = container->getOrderComponent(e4);
-
+    // just to make sure these values are not default
     std::vector<int> v = {1, 2, 3, 4, 5};
-    ASSERT_THAT(v, Not(Contains(spacial1.width)));
-    ASSERT_THAT(v, Not(Contains(depth1)));
-    ASSERT_THAT(v, Not(Contains(order1)));
+    ASSERT_THAT(v, Not(Contains(container->getSpatialComponent(e1).width)));
+    ASSERT_THAT(v, Not(Contains(container->getDepthComponent(e1))));
+    ASSERT_THAT(v, Not(Contains(container->getOrderComponent(e1))));
 
-    // set unique values for components and save value for later comparison
-    spacial2.width = 2;
-    auto width1 = spacial1.width = 1;
-    auto width3 = spacial3.width = 3;
-    auto width4 = spacial4.width = 4;
-    depth2 = 2;
-    auto d1 = depth1 = 1;
-    auto d3 = depth3 = 3;
-    auto d4 = depth4 = 4;
-    order2 = 2;
-    auto o1 = order1 = 1;
-    auto o3 = order3 = 3;
-    auto o4 = order4 = 4;
+    // assign unique values
+    container->getSpatialComponent(e1).width = 1;
+    container->getSpatialComponent(e2).width = 2;
+    container->getSpatialComponent(e3).width = 3;
+    container->getSpatialComponent(e4).width = 4;
+    container->getSpatialComponent(e5).width = 5;
+    container->getDepthComponent(e1) = 1;
+    container->getDepthComponent(e2) = 2;
+    container->getDepthComponent(e3) = 3;
+    container->getDepthComponent(e4) = 4;
+    container->getDepthComponent(e5) = 5;
+    container->getOrderComponent(e1) = 1;
+    container->getOrderComponent(e2) = 2;
+    container->getOrderComponent(e3) = 3;
+    container->getOrderComponent(e4) = 4;
+    container->getOrderComponent(e5) = 5;
 
-    // remove entity
-    container->removeEntity(e2);
+    // remove entities
+    container->removeEntity(e1);
+    container->removeEntity(e3);
+    container->removeEntity(e5);
 
     // create new one
-    const auto& iNew = container->createEntity();
+    const auto& e6 = container->createEntity();
+    const auto& e7 = container->createEntity();
+    const auto& e8 = container->createEntity();
 
     // set uniques values for new entity's components
-    container->getSpatialComponent(iNew).width = 5;
-    container->getDepthComponent(iNew) = 5;
-    container->getOrderComponent(iNew) = 5;
+    container->getSpatialComponent(e6).width = 6;
+    container->getSpatialComponent(e7).width = 7;
+    container->getSpatialComponent(e8).width = 8;
+    container->getDepthComponent(e6) = 6;
+    container->getDepthComponent(e7) = 7;
+    container->getDepthComponent(e8) = 8;
+    container->getOrderComponent(e6) = 6;
+    container->getOrderComponent(e7) = 7;
+    container->getOrderComponent(e8) = 8;
 
-    // get components again to compare with
-    spacial1 = container->getSpatialComponent(e1);
-    spacial3 = container->getSpatialComponent(e3);
-    spacial4 = container->getSpatialComponent(e4);
-    depth1 = container->getDepthComponent(e1);
-    depth3 = container->getDepthComponent(e3);
-    depth4 = container->getDepthComponent(e4);
-    order1 = container->getOrderComponent(e1);
-    order3 = container->getOrderComponent(e3);
-    order4 = container->getOrderComponent(e4);
-
-    ASSERT_THAT(width1, FloatEq(spacial1.width));
-    ASSERT_THAT(width3, FloatEq(spacial3.width));
-    ASSERT_THAT(width4, FloatEq(spacial4.width));
-    ASSERT_THAT(depth1, Eq(d1));
-    ASSERT_THAT(depth3, Eq(d3));
-    ASSERT_THAT(depth4, Eq(d4));
-    ASSERT_THAT(order1, Eq(o1));
-    ASSERT_THAT(order3, Eq(o3));
-    ASSERT_THAT(order4, Eq(o4));
+    ASSERT_THAT(container->getSpatialComponent(e2).width, FloatEq(2));
+    ASSERT_THAT(container->getSpatialComponent(e4).width, FloatEq(4));
+    ASSERT_THAT(container->getDepthComponent(e2), Eq(2));
+    ASSERT_THAT(container->getDepthComponent(e4), Eq(4));
+    ASSERT_THAT(container->getOrderComponent(e2), Eq(2));
+    ASSERT_THAT(container->getOrderComponent(e4), Eq(4));
 }
 
 TEST_F(Component_Test, UtilizedEntityHasInitialDefaultValues) {

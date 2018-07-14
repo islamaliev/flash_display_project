@@ -41,7 +41,7 @@ TEST_F(Stage_Test, ClearRemoveChildren) {
     stage().addChild(obj2);
     ASSERT_THAT(stage().treeSize(), Eq(3));
     ASSERT_THAT(stage().numChildren(), Eq(2));
-    stage().clear();
+    stage().removeChildren();
     ASSERT_THAT(stage().treeSize(), Eq(1));
     ASSERT_THAT(stage().numChildren(), Eq(0));
 }
@@ -57,7 +57,7 @@ TEST_F(Stage_Test, ClearDescructsTree) {
     parent->addChild(child2);
     stage().addChild(grandParent);
     ASSERT_THAT(SpyDisplayObjectContainer::s_numDestructorCalls, Eq(0));
-    stage().clear();
+    stage().removeChildren();
     ASSERT_THAT(SpyDisplayObjectContainer::s_numDestructorCalls, Eq(4));
     ASSERT_FALSE(notChild->isDestructed());
     delete notChild;
@@ -77,7 +77,7 @@ TEST_F(Stage_Test, ClearDoesNotTouchNotInTreeEntities) {
     
     notChild1->setWidth(7);
     notChild2->setWidth(13);
-    stage().clear();
+    stage().removeChildren();
     
     grandParent = new DisplayObjectContainer();
     parent = new DisplayObjectContainer();

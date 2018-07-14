@@ -10,9 +10,10 @@ public:
     Color_Test() {}
 
     void assertColor(unsigned char r, unsigned char g, unsigned char b) {
-        ASSERT_THAT(color.r, Eq(r));
-        ASSERT_THAT(color.g, Eq(g));
-        ASSERT_THAT(color.b, Eq(b));
+        ASSERT_TRUE(false);
+        //ASSERT_THAT(color.r, Eq(r));
+        //ASSERT_THAT(color.g, Eq(g));
+        //ASSERT_THAT(color.b, Eq(b));
     }
 
     Color color;
@@ -95,8 +96,8 @@ TEST_F(Color_ScalarTest, MinusAssign) {
     assertColor(0, 60, 160);
 }
 
-TEST_F(Color_ScalarTest, Multiply) {
-    color = Color(0, 50, 100) * 0.6;
+/*TEST_F(Color_ScalarTest, Multiply) {
+    color = Color(0, 50, 100) * 0.6f;
     assertColor(0, 30, 60);
 }
 
@@ -115,7 +116,7 @@ TEST_F(Color_ScalarTest, DevideAssign) {
     color = Color(0, 10, 20);
     color /= 0.1;
     assertColor(0, 100, 200);
-}
+}*/
 
 TEST_F(Color_Test, ConversationToUint) {
     unsigned r = Color(0xFF, 0, 0).uint();

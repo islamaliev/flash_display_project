@@ -1,5 +1,5 @@
 #include "ComponentContainer.h"
-#include "Contex.h"
+#include "Context.h"
 #include "RenderState.h"
 #include "StackAllocator.h"
 #include "RenderBufferOrganizer.h"

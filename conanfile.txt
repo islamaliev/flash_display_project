@@ -1,0 +1,7 @@
+[requires]
+flash_display/0.1@islamaliev/testing
+gtest/1.8.0@bincrafters/stable
+
+[generators]
+cmake
+

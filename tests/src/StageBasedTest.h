@@ -18,6 +18,6 @@ public:
     }
     
     ~StageBasedTest() {
-        stage().clear();
+        stage().removeChildren();
     }
 };

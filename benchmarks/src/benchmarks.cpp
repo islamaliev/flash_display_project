@@ -87,7 +87,7 @@ namespace benchmark {
                 if (_currentBenchmarkIndex >= 0) {
                     _benchmarks[_currentBenchmarkIndex]->finish();
                     _benchmarks[_currentBenchmarkIndex]->TearDown();
-                    //clear();
+                    clear();
                 }
                 ++_currentBenchmarkIndex;
                 if (_currentBenchmarkIndex == _benchmarks.size()) {
